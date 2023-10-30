@@ -219,10 +219,6 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     connect(fwdLap, SIGNAL(clicked()), m_trainSidebar, SLOT(FFwdLap()));
     */
     connect(m_stopButton, SIGNAL(clicked()), m_trainSidebar, SLOT(Stop()));
-    connect(m_trainSidebar->context, SIGNAL(start()), this, SLOT(updatePlayButtonIcon()));
-    connect(m_trainSidebar->context, SIGNAL(pause()), this, SLOT(updatePlayButtonIcon()));
-    connect(m_trainSidebar->context, SIGNAL(unpause()), this, SLOT(updatePlayButtonIcon()));
-    connect(m_trainSidebar->context, SIGNAL(stop()), this, SLOT(updatePlayButtonIcon()));
     //connect(hideOnIdle, SIGNAL(stateChanged(int)), this, SLOT(autoHideCheckboxChanged(int)));
     connect(m_trainSidebar, SIGNAL(statusChanged(int)), this, SLOT(statusChanged(int)));
     connect(m_connectButton, SIGNAL(released()), m_trainSidebar, SLOT(toggleConnect()));
@@ -301,6 +297,8 @@ void TrainBottom::statusChanged(int status)
     static QIcon connectedIcon(":images/oxygen/power-on.png");
     static QIcon disconnectedIcon(":images/oxygen/power-off.png");
 
+    updatePlayButtonIcon();
+
     // not yet connected
     if ((status&RT_CONNECTED) == 0) {
         m_connectButton->setIcon(disconnectedIcon);
@@ -318,6 +316,8 @@ void TrainBottom::statusChanged(int status)
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
         intensitySlider->setEnabled(false);
+
+        setVisibility(true);
         return;
     }
 
@@ -338,6 +338,8 @@ void TrainBottom::statusChanged(int status)
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
         intensitySlider->setEnabled(false);
+
+        setVisibility(true);
         return;
     }
 
@@ -358,6 +360,8 @@ void TrainBottom::statusChanged(int status)
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
         intensitySlider->setEnabled(false);
+
+        setVisibility(true);
         return;
     }
 
@@ -378,6 +382,8 @@ void TrainBottom::statusChanged(int status)
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
         intensitySlider->setEnabled(false);
+
+        setVisibility(true);
         return;
     }
 
@@ -398,9 +404,18 @@ void TrainBottom::statusChanged(int status)
         loadUp->setEnabled(true);
         loadDown->setEnabled(true);
         intensitySlider->setEnabled(true);
+
+        setVisibility(false);
         return;
     }
 
+}
+
+void TrainBottom::setVisibility(bool want)
+{
+    // Keep toolbar buttons in sync.
+    // Maybe use signals, this is way to deep
+    m_trainSidebar->context->mainWindow->showLowbar(want);
 }
 
 void TrainBottom::setNotification(QString msg, int timeout)

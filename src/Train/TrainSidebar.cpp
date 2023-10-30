@@ -2167,7 +2167,7 @@ void TrainSidebar::loadUpdate()
     // therefore, use a QTime timer to measure the load period
     load_msecs += load_period.restart();
 
-    if (status&RT_MODE_ERGO) {        
+    if (status&RT_MODE_ERGO) {
         if (context->currentErgFile()) {
             load = ergFileQueryAdapter.wattsAt(load_msecs, curLap);
 
@@ -2191,7 +2191,7 @@ void TrainSidebar::loadUpdate()
         } else {
             foreach(int dev, activeDevices) Devices[dev].controller->setLoad(load);
             context->notifySetNow(load_msecs);
-        }        
+        }
     } else {
         if (context->currentErgFile()) {
             // Call gradientAt to obtain current lap num.

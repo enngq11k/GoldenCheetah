@@ -47,6 +47,7 @@ private slots:
     void statusChanged(int status);
     void setNotification(QString msg, int timeout);
     void clearNotification(void);
+    void setVisibility(bool want);
 
 signals:
     void autoHideChanged(bool enabled);
