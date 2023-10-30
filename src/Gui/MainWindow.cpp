@@ -178,8 +178,9 @@ MainWindow::MainWindow(const QDir &home)
 
     // if no workout directory is configured, default to the
     // top level GoldenCheetah directory
-    if (appsettings->value(NULL, GC_WORKOUTDIR).toString() == "")
-        appsettings->setValue(GC_WORKOUTDIR, QFileInfo(context->athlete->home->root().canonicalPath() + "/../").canonicalPath());
+    QString workoutDir = appsettings->value(NULL, GC_WORKOUTDIR).toString();
+    if (workoutDir.isEmpty() || workoutDir == "0")
+        appsettings->setValue(GC_WORKOUTDIR, QFileInfo(context->athlete->home->root().canonicalPath()).path());    
 
     /*----------------------------------------------------------------------
      *  GUI setup
@@ -211,26 +212,25 @@ MainWindow::MainWindow(const QDir &home)
     sidebar->addItem(QImage(":sidebar/athlete.png"), tr("athletes"), 0, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Athletes));
     sidebar->setItemEnabled(1, false);
 
-    sidebar->addItem(QImage(":sidebar/plan.png"), tr("plan"), 1), tr("Feature not implemented yet");
-    sidebar->setItemEnabled(1, false);
+    // sidebar->addItem(QImage(":sidebar/plan.png"), tr("plan"), 1), tr("Feature not implemented yet");
+    // sidebar->setItemEnabled(1, false
+    // sidebar->addItem(QImage(":sidebar/trends.png"), tr("trends"), 2, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Trends));
+    // sidebar->addItem(QImage(":sidebar/assess.png"), tr("activities"), 3, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Rides));
+    // sidebar->setItemSelected(3, true);
 
-    sidebar->addItem(QImage(":sidebar/trends.png"), tr("trends"), 2, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Trends));
-    sidebar->addItem(QImage(":sidebar/assess.png"), tr("activities"), 3, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Rides));
-    sidebar->setItemSelected(3, true);
-
-    sidebar->addItem(QImage(":sidebar/reflect.png"), tr("reflect"), 4), tr("Feature not implemented yet");
-    sidebar->setItemEnabled(4, false);
+    // sidebar->addItem(QImage(":sidebar/reflect.png"), tr("reflect"), 4), tr("Feature not implemented yet");
+    // sidebar->setItemEnabled(4, false);
 
     sidebar->addItem(QImage(":sidebar/train.png"), tr("train"), 5, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Train));
 
     sidebar->addStretch();
-    sidebar->addItem(QImage(":sidebar/apps.png"), tr("apps"), 6, tr("Feature not implemented yet"));
-    sidebar->setItemEnabled(6, false);
-    sidebar->addStretch();
+    // sidebar->addItem(QImage(":sidebar/apps.png"), tr("apps"), 6, tr("Feature not implemented yet"));
+    // sidebar->setItemEnabled(6, false);
+    // sidebar->addStretch();
 
     // we can click on the quick icons, but they aren't selectable views
-    sidebar->addItem(QImage(":sidebar/sync.png"), tr("sync"), 7, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Sync));
-    sidebar->setItemSelectable(7, false);
+    // sidebar->addItem(QImage(":sidebar/sync.png"), tr("sync"), 7, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Sync));
+    // sidebar->setItemSelectable(7, false);
     sidebar->addItem(QImage(":sidebar/prefs.png"), tr("options"), 8, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Options));
     sidebar->setItemSelectable(8, false);
 
@@ -491,24 +491,25 @@ MainWindow::MainWindow(const QDir &home)
 
     // ACTIVITY MENU
     QMenu *rideMenu = menuBar()->addMenu(tr("A&ctivity"));
-    rideMenu->addAction(tr("&Download from device..."), this, SLOT(downloadRide()), tr("Ctrl+D"));
+    // rideMenu->addAction(tr("&Download from device..."), this, SLOT(downloadRide()), tr("Ctrl+D"));
     rideMenu->addAction(tr("&Import from file..."), this, SLOT (importFile()), tr ("Ctrl+I"));
     rideMenu->addAction(tr("&Manual entry..."), this, SLOT(manualRide()), tr("Ctrl+M"));
     rideMenu->addSeparator ();
     rideMenu->addAction(tr("&Export..."), this, SLOT(exportRide()), tr("Ctrl+E"));
-    rideMenu->addAction(tr("&Batch Processing..."), this, SLOT(batchProcessing()), tr("Ctrl+B"));
+    // rideMenu->addAction(tr("&Batch Processing..."), this, SLOT(batchProcessing()), tr("Ctrl+B"));
 
     rideMenu->addSeparator ();
     rideMenu->addAction(tr("&Save activity"), this, SLOT(saveRide()), tr("Ctrl+S"));
     rideMenu->addAction(tr("D&elete activity..."), this, SLOT(deleteRide()));
-    rideMenu->addAction(tr("Split &activity..."), this, SLOT(splitRide()));
-    rideMenu->addAction(tr("Combine activities..."), this, SLOT(mergeRide()));
-    rideMenu->addSeparator ();
-    rideMenu->addAction(tr("Find intervals..."), this, SLOT(addIntervals()), tr (""));
+    // rideMenu->addAction(tr("Split &activity..."), this, SLOT(splitRide()));
+    // rideMenu->addAction(tr("Combine activities..."), this, SLOT(mergeRide()));
+    // rideMenu->addSeparator ();
+    // rideMenu->addAction(tr("Find intervals..."), this, SLOT(addIntervals()), tr (""));
 
     HelpWhatsThis *helpRideMenu = new HelpWhatsThis(rideMenu);
     rideMenu->setWhatsThis(helpRideMenu->getWhatsThisText(HelpWhatsThis::MenuBar_Activity));
 
+    /*
     // SHARE MENU
     QMenu *shareMenu = menuBar()->addMenu(tr("Sha&re"));
 
@@ -528,7 +529,6 @@ MainWindow::MainWindow(const QDir &home)
     connect(checkAction, SIGNAL(triggered(bool)), this, SLOT(checkCloud()));
     shareMenu->addAction(checkAction);
 
-
     // set the menus to reflect the configured accounts
     connect(uploadMenu, SIGNAL(aboutToShow()), this, SLOT(setUploadMenu()));
     connect(syncMenu, SIGNAL(aboutToShow()), this, SLOT(setSyncMenu()));
@@ -537,26 +537,27 @@ MainWindow::MainWindow(const QDir &home)
     connect(syncMenu, SIGNAL(triggered(QAction*)), this, SLOT(syncCloud(QAction*)));
     connect(measuresMenu, SIGNAL(aboutToShow()), this, SLOT(setMeasuresMenu()));
     connect(measuresMenu, SIGNAL(triggered(QAction*)), this, SLOT(downloadMeasures(QAction*)));
+    */
 
-    HelpWhatsThis *helpShare = new HelpWhatsThis(shareMenu);
-    shareMenu->setWhatsThis(helpShare->getWhatsThisText(HelpWhatsThis::MenuBar_Share));
+    // HelpWhatsThis *helpShare = new HelpWhatsThis(shareMenu);
+    // shareMenu->setWhatsThis(helpShare->getWhatsThisText(HelpWhatsThis::MenuBar_Share));
 
     // TOOLS MENU
     QMenu *optionsMenu = menuBar()->addMenu(tr("&Tools"));
-    optionsMenu->addAction(tr("CP and W' Estimator..."), this, SLOT(showEstimateCP()));
-    optionsMenu->addAction(tr("CP and W' Solver..."), this, SLOT(showSolveCP()));
-    optionsMenu->addAction(tr("Air Density (Rho) Estimator..."), this, SLOT(showRhoEstimator()));
-    optionsMenu->addAction(tr("VDOT and T-Pace Calculator..."), this, SLOT(showVDOTCalculator()));
+    // optionsMenu->addAction(tr("CP and W' Estimator..."), this, SLOT(showEstimateCP()));
+    // optionsMenu->addAction(tr("CP and W' Solver..."), this, SLOT(showSolveCP()));
+    // optionsMenu->addAction(tr("Air Density (Rho) Estimator..."), this, SLOT(showRhoEstimator()));
+    // optionsMenu->addAction(tr("VDOT and T-Pace Calculator..."), this, SLOT(showVDOTCalculator()));
 
-    optionsMenu->addSeparator();
+    // optionsMenu->addSeparator();
     optionsMenu->addAction(tr("Create a new workout..."), this, SLOT(showWorkoutWizard()));
-    optionsMenu->addAction(tr("Download workouts from ErgDB..."), this, SLOT(downloadErgDB()));
-    optionsMenu->addAction(tr("Download workouts from Today's Plan..."), this, SLOT(downloadTodaysPlanWorkouts()));
-    optionsMenu->addAction(tr("Import workouts, videos, videoSyncs..."), this, SLOT(importWorkout()));
-    optionsMenu->addAction(tr("Scan disk for workouts, videos, videoSyncs..."), this, SLOT(manageLibrary()));
+    // optionsMenu->addAction(tr("Download workouts from ErgDB..."), this, SLOT(downloadErgDB()));
+    // optionsMenu->addAction(tr("Download workouts from Today's Plan..."), this, SLOT(downloadTodaysPlanWorkouts()));
+    // optionsMenu->addAction(tr("Import workouts, videos, videoSyncs..."), this, SLOT(importWorkout()));
+    // optionsMenu->addAction(tr("Scan disk for workouts, videos, videoSyncs..."), this, SLOT(manageLibrary()));
 
-    optionsMenu->addAction(tr("Create Heat Map..."), this, SLOT(generateHeatMap()), tr(""));
-    optionsMenu->addAction(tr("Export Metrics as CSV..."), this, SLOT(exportMetrics()), tr(""));
+    // optionsMenu->addAction(tr("Create Heat Map..."), this, SLOT(generateHeatMap()), tr(""));
+    // optionsMenu->addAction(tr("Export Metrics as CSV..."), this, SLOT(exportMetrics()), tr(""));
 
 #ifdef GC_HAS_CLOUD_DB
     // CloudDB options
@@ -642,7 +643,7 @@ MainWindow::MainWindow(const QDir &home)
 
     viewMenu->addSeparator();
     viewMenu->addAction(tr("Activities"), this, SLOT(selectAnalysis()));
-    viewMenu->addAction(tr("Trends"), this, SLOT(selectTrends()));
+    // viewMenu->addAction(tr("Trends"), this, SLOT(selectTrends()));
     viewMenu->addAction(tr("Train"), this, SLOT(selectTrain()));
     viewMenu->addSeparator();
     viewMenu->addAction(tr("Import Perspective..."), this, SLOT(importPerspective()));
@@ -659,7 +660,6 @@ MainWindow::MainWindow(const QDir &home)
     styleAction = viewMenu->addAction(tr("Tabbed not Tiled"), this, SLOT(toggleStyle()));
     styleAction->setCheckable(true);
     styleAction->setChecked(true);
-
 
     connect(subChartMenu, SIGNAL(aboutToShow()), this, SLOT(setSubChartMenu()));
     connect(subChartMenu, SIGNAL(triggered(QAction*)), this, SLOT(addChart(QAction*)));
@@ -692,12 +692,16 @@ MainWindow::MainWindow(const QDir &home)
     //connect(this, SIGNAL(rideClean()), this, SLOT(enableSaveButton()));
 
     saveGCState(currentAthleteTab->context); // set to whatever we started with
-    selectAnalysis();
+    selectTrain();
 
     //grab focus
     currentAthleteTab->setFocus();
 
     installEventFilter(this);
+
+    // Disabled by default
+    showViewbar(false);
+    showToolbar(false);
 
     // catch global config changes
     connect(GlobalContext::context(), SIGNAL(configChanged(qint32)), this, SLOT(configChanged(qint32)));
@@ -1081,8 +1085,7 @@ MainWindow::eventFilter(QObject *o, QEvent *e)
         if (e->type() == QEvent::WindowStateChange) {
 
             // if we are entering full screen mode we hide the sidebar
-            if (windowState()&Qt::WindowFullScreen) showViewbar(false);
-            else showViewbar(true);
+            if (windowState()&Qt::WindowFullScreen) showViewbar(false);            
 
             resizeEvent(NULL); // see below
         }
@@ -1855,10 +1858,10 @@ MainWindow::saveAllUnsavedRides()
 {
     // flush in-flight changes
     currentAthleteTab->context->notifyMetadataFlush();
-    currentAthleteTab->context->ride->notifyRideMetadataChanged();
 
     // save
     if (currentAthleteTab->context->ride) {
+        currentAthleteTab->context->ride->notifyRideMetadataChanged();
         saveAllFilesSilent(currentAthleteTab->context); // will signal save to everyone
     }
 }

@@ -1889,15 +1889,29 @@ ErgFileQueryAdapter::updateQueryStateFromDistance(double x, int& lapnum) const
     }
     else lapnum = 0;
 
-    // find right section of the file
-    while (x < Points().at(qs.leftPoint).x || x > Points().at(qs.rightPoint).x) {
-        if (x < Points().at(qs.leftPoint).x) {
-            qs.leftPoint--;
-            qs.rightPoint--;
-        }
-        else if (x > Points().at(qs.rightPoint).x) {
-            qs.leftPoint++;
-            qs.rightPoint++;
+    // Todo: Why?
+    if (qs.leftPoint < 0)
+    {
+        qs.leftPoint = 0;
+    }
+    else
+    {
+        // find right section of the file
+        while (x < Points().at(qs.leftPoint).x || x > Points().at(qs.rightPoint).x) {
+            if (x < Points().at(qs.leftPoint).x) {
+                qs.leftPoint--;
+                qs.rightPoint--;
+            }
+            else if (x > Points().at(qs.rightPoint).x) {
+                qs.leftPoint++;
+                qs.rightPoint++;
+            }
+
+            if (qs.leftPoint < 0)
+            {
+                qs.leftPoint = 0;
+                break;
+            }
         }
     }
 
@@ -1915,6 +1929,10 @@ ErgFileQueryAdapter::wattsAt(double x, int& lapnum) const
         qDebug() << "wattsAt should not be called unless ergfile has watts";
         return -100;
     }
+
+    // Todo: Why?
+    if (qs.leftPoint < 0) qs.leftPoint = 0;
+    if (qs.rightPoint< 0) qs.rightPoint = 0;
 
     // two different points in time but the same watts
     // at both, it doesn't really matter which value

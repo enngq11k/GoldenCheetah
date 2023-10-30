@@ -280,34 +280,36 @@ GcSplitterHandle::init(QString title, Qt::Orientation orientation,
     titleLayout->setContentsMargins(0,0,0,0);
     titleLayout->setSpacing(2 *dpiXFactor);
 
-    titleLabel = new GcLabel(title, this);
-    titleLabel->setXOff(0);
-    titleLabel->setChrome(true);
+    // Hack to hide title for training view
+    if (!title.isEmpty()) {
+        titleLabel = new GcLabel(title, this);
+        titleLabel->setXOff(0);
+        titleLabel->setChrome(true);
 
-    // set handle size according to font metric
-    QFont font;
-    QFontMetrics fm(font);
-    bigHandle = fm.height() + 16;
-    smallHandle = fm.height() + 5;
+        // set handle size according to font metric
+        QFont font;
+        QFontMetrics fm(font);
+        bigHandle = fm.height() + 16;
+        smallHandle = fm.height() + 5;
 
-    // use the sizes as set
-    if (metal) setFixedHeight(bigHandle);
-    else setFixedHeight(smallHandle);
+        // use the sizes as set
+        if (metal) setFixedHeight(bigHandle);
+        else setFixedHeight(smallHandle);
 
-#ifdef Q_OS_MAC
-    //titleLabel->setFixedHeight(16);
-    titleLabel->setYOff(1);
-    //font.setPointSize(11);
-#else
-    titleLabel->setYOff(1);
-    //font.setPointSize(10);
-    font.setWeight(QFont::Bold);
-#endif
-    titleLabel->setFont(font);
+    #ifdef Q_OS_MAC
+        //titleLabel->setFixedHeight(16);
+        titleLabel->setYOff(1);
+        //font.setPointSize(11);
+    #else
+        titleLabel->setYOff(1);
+        //font.setPointSize(10);
+        font.setWeight(QFont::Bold);
+    #endif
+        titleLabel->setFont(font);
 
-    titleLayout->addSpacing(10);
-    titleLayout->addWidget(titleLabel);
-
+        titleLayout->addSpacing(10);
+        titleLayout->addWidget(titleLabel);
+        }
     // widgets
     if (left) titleLayout->addWidget(left);
     titleLayout->addStretch();
@@ -322,7 +324,11 @@ GcSplitterHandle::init(QString title, Qt::Orientation orientation,
 QSize
 GcSplitterHandle::sizeHint() const
 {
-    return QSize(200, metal ? bigHandle :smallHandle);
+    if (_title.isEmpty()) {
+        return QSize(1,1);
+    } else {
+        return QSize(200, metal ? bigHandle :smallHandle);
+    }
 }
 
 GcSubSplitter*

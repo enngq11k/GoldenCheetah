@@ -31,6 +31,8 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QWidget(parent),
     m_trainSidebar(trainSidebar)
 {
+    int iconSize = 48;
+
     HelpWhatsThis *help = new HelpWhatsThis(this);
     this->setWhatsThis(help->getWhatsThisText(HelpWhatsThis::WorkoutControl));
 
@@ -42,7 +44,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon connectButtonIcon(":images/oxygen/power-off.png");
     m_connectButton = new QPushButton(connectButtonIcon, "", this);
     m_connectButton->setFocusPolicy(Qt::NoFocus);
-    m_connectButton->setIconSize(QSize(64,64));
+    m_connectButton->setIconSize(QSize(iconSize,iconSize));
     m_connectButton->setAutoFillBackground(false);
     m_connectButton->setAutoDefault(false);
     m_connectButton->setFlat(true);
@@ -53,7 +55,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon rewIcon(":images/oxygen/rewind.png");
     m_rewindButton = new QPushButton(rewIcon, "", this);
     m_rewindButton->setFocusPolicy(Qt::NoFocus);
-    m_rewindButton->setIconSize(QSize(64,64));
+    m_rewindButton->setIconSize(QSize(iconSize,iconSize));
     m_rewindButton->setAutoFillBackground(false);
     m_rewindButton->setAutoDefault(false);
     m_rewindButton->setFlat(true);
@@ -66,7 +68,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon stopIcon(":images/oxygen/stop.png");
     m_stopButton = new QPushButton(stopIcon, "", this);
     m_stopButton->setFocusPolicy(Qt::NoFocus);
-    m_stopButton->setIconSize(QSize(64,64));
+    m_stopButton->setIconSize(QSize(iconSize,iconSize));
     m_stopButton->setAutoFillBackground(false);
     m_stopButton->setAutoDefault(false);
     m_stopButton->setFlat(true);
@@ -77,7 +79,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon playIcon(":images/oxygen/play.png");
     m_playButton = new QPushButton(playIcon, "", this);
     m_playButton->setFocusPolicy(Qt::NoFocus);
-    m_playButton->setIconSize(QSize(64,64));
+    m_playButton->setIconSize(QSize(iconSize,iconSize));
     m_playButton->setAutoFillBackground(false);
     m_playButton->setAutoDefault(false);
     m_playButton->setFlat(true);
@@ -88,7 +90,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon fwdIcon(":images/oxygen/ffwd.png");
     m_forwardButton = new QPushButton(fwdIcon, "", this);
     m_forwardButton->setFocusPolicy(Qt::NoFocus);
-    m_forwardButton->setIconSize(QSize(64,64));
+    m_forwardButton->setIconSize(QSize(iconSize,iconSize));
     m_forwardButton->setAutoFillBackground(false);
     m_forwardButton->setAutoDefault(false);
     m_forwardButton->setFlat(true);
@@ -98,10 +100,11 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     m_forwardButton->setShortcut(Qt::Key_MediaNext);
     toolbuttons->addWidget(m_forwardButton);
 
+    /*
     QIcon backLapIcon(":images/oxygen/back.png");
     backLap = new QPushButton(backLapIcon, "", this);
     backLap->setFocusPolicy(Qt::NoFocus);
-    backLap->setIconSize(QSize(64,64));
+    backLap->setIconSize(QSize(iconSize,iconSize));
     backLap->setAutoFillBackground(false);
     backLap->setAutoDefault(false);
     backLap->setFlat(true);
@@ -113,7 +116,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon lapIcon(":images/oxygen/lap.png");
     m_lapButton = new QPushButton(lapIcon, "", this);
     m_lapButton->setFocusPolicy(Qt::NoFocus);
-    m_lapButton->setIconSize(QSize(64,64));
+    m_lapButton->setIconSize(QSize(iconSize,iconSize));
     m_lapButton->setAutoFillBackground(false);
     m_lapButton->setAutoDefault(false);
     m_lapButton->setFlat(true);
@@ -124,7 +127,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon fwdLapIcon(":images/oxygen/fwd.png");
     fwdLap = new QPushButton(fwdLapIcon, "", this);
     fwdLap->setFocusPolicy(Qt::NoFocus);
-    fwdLap->setIconSize(QSize(64,64));
+    fwdLap->setIconSize(QSize(iconSize,iconSize));
     fwdLap->setAutoFillBackground(false);
     fwdLap->setAutoDefault(false);
     fwdLap->setFlat(true);
@@ -133,11 +136,12 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     fwdLap->setAutoRepeatDelay(400);
     fwdLap->setShortcut(Qt::Key_MediaLast);
     toolbuttons->addWidget(fwdLap);
+    */
 
     QIcon calIcon(":images/oxygen/cal.png");
     cal = new QPushButton(calIcon, "", this);
     cal->setFocusPolicy(Qt::NoFocus);
-    cal->setIconSize(QSize(64,64));
+    cal->setIconSize(QSize(iconSize,iconSize));
     cal->setAutoFillBackground(false);
     cal->setAutoDefault(false);
     cal->setFlat(true);
@@ -148,7 +152,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon upIcon(":images/oxygen/up.png");
     loadUp = new QPushButton(upIcon, "", this);
     loadUp->setFocusPolicy(Qt::NoFocus);
-    loadUp->setIconSize(QSize(64,64));
+    loadUp->setIconSize(QSize(iconSize,iconSize));
     loadUp->setAutoFillBackground(false);
     loadUp->setAutoDefault(false);
     loadUp->setFlat(true);
@@ -161,7 +165,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QIcon downIcon(":images/oxygen/down.png");
     loadDown = new QPushButton(downIcon, "", this);
     loadDown->setFocusPolicy(Qt::NoFocus);
-    loadDown->setIconSize(QSize(64,64));
+    loadDown->setIconSize(QSize(iconSize,iconSize));
     loadDown->setAutoFillBackground(false);
     loadDown->setAutoDefault(false);
     loadDown->setFlat(true);
@@ -209,9 +213,11 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     connect(m_playButton, SIGNAL(clicked()), m_trainSidebar, SLOT(Start()));
     connect(m_rewindButton, SIGNAL(clicked()), m_trainSidebar, SLOT(Rewind()));
     connect(m_forwardButton, SIGNAL(clicked()), m_trainSidebar, SLOT(FFwd()));
+    /*
     connect(backLap, SIGNAL(clicked()), m_trainSidebar, SLOT(RewindLap()));
     connect(m_lapButton, SIGNAL(clicked()), m_trainSidebar, SLOT(newLap()));
     connect(fwdLap, SIGNAL(clicked()), m_trainSidebar, SLOT(FFwdLap()));
+    */
     connect(m_stopButton, SIGNAL(clicked()), m_trainSidebar, SLOT(Stop()));
     connect(m_trainSidebar->context, SIGNAL(start()), this, SLOT(updatePlayButtonIcon()));
     connect(m_trainSidebar->context, SIGNAL(pause()), this, SLOT(updatePlayButtonIcon()));
@@ -240,7 +246,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     // Ensure the bottom bar is sized to show 3 lines of notification text
     // but don't allow it to crop the buttons if smaller font is used..
     int buttonHeight = m_connectButton->sizeHint().height();
-    int notificationHeight = 3 * notificationText->fontMetrics().lineSpacing();
+    int notificationHeight = 2 * notificationText->fontMetrics().lineSpacing();
     int contentHeight = qMax(buttonHeight, notificationHeight);
 
     int layoutMargins = allControlsLayout->contentsMargins().top() +
@@ -303,9 +309,11 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(false);
         m_forwardButton->setEnabled(false);
         m_rewindButton->setEnabled(false);
+        /*
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
         fwdLap->setEnabled(false);
+        */
         cal->setEnabled(false);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -321,9 +329,11 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(false);
         m_forwardButton->setEnabled(false);
         m_rewindButton->setEnabled(false);
+        /*
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
         fwdLap->setEnabled(false);
+        */
         cal->setEnabled(false);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -339,9 +349,11 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(true);
         m_forwardButton->setEnabled(false);
         m_rewindButton->setEnabled(false);
+        /*
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
         fwdLap->setEnabled(false);
+        */
         cal->setEnabled(false);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -357,9 +369,11 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(true);
         m_forwardButton->setEnabled(false);
         m_rewindButton->setEnabled(false);
+        /*
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
         fwdLap->setEnabled(false);
+        */
         cal->setEnabled(true);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -375,9 +389,11 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(true);
         m_forwardButton->setEnabled(true);
         m_rewindButton->setEnabled(true);
+        /*
         backLap->setEnabled(true);
         m_lapButton->setEnabled(true);
         fwdLap->setEnabled(true);
+        */
         cal->setEnabled(true);
         loadUp->setEnabled(true);
         loadDown->setEnabled(true);

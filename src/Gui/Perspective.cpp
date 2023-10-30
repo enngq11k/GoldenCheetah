@@ -72,8 +72,9 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-static const int tileMargin = 20;
+static const int tileMargin = 2;
 static const int tileSpacing = 10;
+static const int chart_top_margin = 8;
 
 Perspective::Perspective(Context *context, QString title, int type) :
     GcWindow(context), context(context), active(false),  resizing(false), clicked(NULL), dropPending(false),
@@ -100,7 +101,7 @@ Perspective::Perspective(Context *context, QString title, int type) :
     hl->addWidget(titleLabel);
     hl->addWidget(titleEdit);
     cl->addLayout(hl);
-    cl->addSpacing(15);
+    cl->addSpacing(0);
     cl->addWidget(controlStack);
     setControls(cw);
 
@@ -349,7 +350,7 @@ Perspective::configChanged(qint32)
 
         // set top margin
         charts[i]->setContentsMargins(0,
-                                      (currentStyle==0 ? 0 : 15) * dpiXFactor,
+                                      (currentStyle==0 ? 0 : chart_top_margin) * dpiXFactor,
                                       0, 0);
 
     }
@@ -590,7 +591,7 @@ Perspective::styleChanged(int id, bool force)
             break;
         case 2 : // thet are in a FlowLayout
             winFlow->addWidget(charts[i]);
-            charts[i]->setContentsMargins(0,15*dpiYFactor,0,0);
+            charts[i]->setContentsMargins(0,chart_top_margin*dpiYFactor,0,0);
             charts[i]->setResizable(true); // we need to show on tab selection!
             charts[i]->show();
             charts[i]->showMore(true);
@@ -791,7 +792,7 @@ Perspective::addChart(GcChartWindow* newone)
                 newone->setFixedWidth(newwidth);
                 if (newheight < minHeight) newheight = minHeight;
                 newone->setFixedHeight(newheight);
-                newone->setContentsMargins(0,15*dpiYFactor,0,0);
+                newone->setContentsMargins(0,chart_top_margin*dpiYFactor,0,0);
                 newone->setResizable(true); // we need to show on tab selection!
                 newone->showMore(true);
 
@@ -910,7 +911,7 @@ Perspective::showEvent(QShowEvent *)
     // a style and we are shown.
     for(int index=0; index<charts.count(); index++) {
         if (currentStyle == 0) charts[index]->setContentsMargins(0,0,0,0);
-        else charts[index]->setContentsMargins(0,15*dpiXFactor,0,0);
+        else charts[index]->setContentsMargins(0,chart_top_margin*dpiXFactor,0,0);
     }
 
     resize();
@@ -1308,11 +1309,11 @@ GcWindowDialog::GcWindowDialog(GcWinID type, Context *context, GcChartWindow **h
     setWindowTitle(tr("Chart Setup"));
 
     QRect size= desktop->availableGeometry();
-    setMinimumHeight(500);
+    setMinimumHeight(100);
 
     // chart and settings side by side need to be big!
     if (size.width() >= 1300) setMinimumWidth(1200); 
-    else setMinimumWidth(800); // otherwise the old default
+    else setMinimumWidth(100); // otherwise the old default
     setWindowModality(Qt::ApplicationModal);
 
     mainLayout = new QVBoxLayout(this);

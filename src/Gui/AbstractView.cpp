@@ -53,8 +53,8 @@ AbstractView::AbstractView(Context *context, int type) :
     stack = new QStackedWidget(this);
     stack->setContentsMargins(0,0,0,0);
     stack->setFrameStyle(QFrame::Plain | QFrame::NoFrame);
-    stack->setMinimumWidth(500*dpiXFactor);
-    stack->setMinimumHeight(500*dpiYFactor);
+    stack->setMinimumWidth(100*dpiXFactor);
+    stack->setMinimumHeight(100*dpiYFactor);
 
     layout->addWidget(stack);
 
@@ -69,7 +69,7 @@ AbstractView::AbstractView(Context *context, int type) :
 
     QString heading = tr("Compare Activities and Intervals");
     if (type == VIEW_TRENDS) heading = tr("Compare Date Ranges");
-    else if (type == VIEW_TRAIN) heading = tr("Intensity Adjustments and Workout Control");
+    else if (type == VIEW_TRAIN) heading = QString();
 
     mainSplitter = new ViewSplitter(Qt::Vertical, heading, this);
     mainSplitter->setHandleWidth(23 *dpiXFactor);

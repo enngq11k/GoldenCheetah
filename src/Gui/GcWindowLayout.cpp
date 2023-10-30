@@ -114,11 +114,12 @@ QSize GcWindowLayout::sizeHint() const
 
 QSize GcWindowLayout::minimumSize() const
 {
-    QSize size;
+    QSize size(100,100);
+    /*
     QLayoutItem *item;
     foreach (item, itemList)
         size = size.expandedTo(item->minimumSize());
-
+*/
     size += QSize(2*margin(), 2*margin());
     return size;
 }
@@ -157,6 +158,39 @@ int GcWindowLayout::doLayout(const QRect &rect, bool testOnly) const
         x = nextX;
         lineHeight = qMax(lineHeight, item->sizeHint().height());
     }
+
+    /*
+    QLayoutItem *item;
+
+    int nextY = 0;
+    int nextX = 0;
+    for (int i= 0; i< itemList.count(); ++i)
+    {
+        item = itemList[i];
+        QSize sizeHint = item->sizeHint();
+        if (i < 6)
+        {
+            nextY = y + item->sizeHint().height();
+            if (nextX == 0)
+            {
+                nextX = x + item->sizeHint().width();
+            }
+        }
+        else
+        {
+            x = nextX;
+            y = effectiveRect.y();
+            sizeHint.setWidth(sizeHint.width() - 50);
+        }
+
+        if (!testOnly)
+        {
+            item->setGeometry(QRect(QPoint(x, y), sizeHint));
+        }
+
+        y = nextY + 15;
+    }*/
+
     return y + lineHeight - rect.y() + bottom;
 }
 int GcWindowLayout::smartSpacing(QStyle::PixelMetric pm) const

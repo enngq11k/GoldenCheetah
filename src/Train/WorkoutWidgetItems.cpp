@@ -29,7 +29,7 @@
 static bool GRIDLINES = true;
 #define SPACING (4 *dpiXFactor)
 
-static int MINTOOLHEIGHT = 350; // don't do lots of decoration on "mini" view
+static int MINTOOLHEIGHT = 10; // don't do lots of decoration on "mini" view
 
 WWPowerScale::WWPowerScale(WorkoutWidget *w, Context *c) : WorkoutWidgetItem(w), context(c)
 {

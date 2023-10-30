@@ -37,9 +37,9 @@
 
 #include "Colors.h"
 
-static int MINTOOLHEIGHT = 350; // minimum size for a full editor
+static int MINTOOLHEIGHT = 100; // minimum size for a full editor
 
-static double MAXZOOM = 3.0f;
+static double MAXZOOM = 5.0f;
 static double MINZOOM = 0.2f;
 static double ZOOMSTEP = 0.1f;
 
@@ -49,9 +49,9 @@ void WorkoutWidget::adjustLayout()
     if (height() > MINTOOLHEIGHT) {
 
         // big, can edit and all widgets shown
-        IHEIGHT = 10 *dpiYFactor;
-        THEIGHT = 35 *dpiYFactor;
-        BHEIGHT = 35 *dpiYFactor;
+        IHEIGHT = 0; //10 *dpiYFactor;
+        THEIGHT = 15 *dpiYFactor;
+        BHEIGHT = 17 *dpiYFactor;
         LWIDTH = 65 *dpiXFactor;
         RWIDTH = 35 *dpiXFactor;
         XTICLENGTH = 3 *dpiYFactor;
@@ -69,7 +69,7 @@ void WorkoutWidget::adjustLayout()
         // mini mode
         IHEIGHT = 0;
         THEIGHT = 0;
-        BHEIGHT = 20 *dpiYFactor;
+        BHEIGHT = 17 *dpiYFactor;
         LWIDTH = 10 *dpiXFactor;
         RWIDTH = 10 *dpiXFactor;
         XTICLENGTH = 3 *dpiYFactor;
@@ -79,7 +79,7 @@ void WorkoutWidget::adjustLayout()
         SPACING = 2 * dpiXFactor; // between labels and tics (if there are tics)
         XMOVE = 5; // how many to move X when cursoring
         YMOVE = 1; // how many to move Y when cursoring
-        GRIDLINES = false;
+        GRIDLINES = true;
         LOG = false;
     }
 }

@@ -438,15 +438,15 @@ TrainSidebar::workoutPopup()
     // OK - we are working with a specific event..
     QMenu menu(workoutTree);
     QAction *import = new QAction(tr("Import Workout from File"), workoutTree);
-    QAction *download = new QAction(tr("Get Workouts from ErgDB"), workoutTree);
-    QAction *dlTodaysPlan = new QAction(tr("Get Workouts from Today's Plan"), workoutTree);
-    QAction *wizard = new QAction(tr("Create Workout via Wizard"), workoutTree);
+    // QAction *download = new QAction(tr("Get Workouts from ErgDB"), workoutTree);
+    // QAction *dlTodaysPlan = new QAction(tr("Get Workouts from Today's Plan"), workoutTree);
+    // QAction *wizard = new QAction(tr("Create Workout via Wizard"), workoutTree);
     QAction *scan = new QAction(tr("Scan for Workouts"), workoutTree);
 
     menu.addAction(import);
-    menu.addAction(download);
-    menu.addAction(dlTodaysPlan);
-    menu.addAction(wizard);
+    // menu.addAction(download);
+    // menu.addAction(dlTodaysPlan);
+    // menu.addAction(wizard);
     menu.addAction(scan);
 
 
@@ -476,9 +476,9 @@ TrainSidebar::workoutPopup()
 
     // connect menu to functions
     connect(import, SIGNAL(triggered(void)), context->mainWindow, SLOT(importWorkout(void)));
-    connect(wizard, SIGNAL(triggered(void)), context->mainWindow, SLOT(showWorkoutWizard(void)));
-    connect(download, SIGNAL(triggered(void)), context->mainWindow, SLOT(downloadErgDB(void)));
-    connect(dlTodaysPlan, SIGNAL(triggered(void)), context->mainWindow, SLOT(downloadTodaysPlanWorkouts(void)));
+    // connect(wizard, SIGNAL(triggered(void)), context->mainWindow, SLOT(showWorkoutWizard(void)));
+    // connect(download, SIGNAL(triggered(void)), context->mainWindow, SLOT(downloadErgDB(void)));
+    // connect(dlTodaysPlan, SIGNAL(triggered(void)), context->mainWindow, SLOT(downloadTodaysPlanWorkouts(void)));
     connect(scan, SIGNAL(triggered(void)), context->mainWindow, SLOT(manageLibrary(void)));
 
     // execute the menu
@@ -2167,7 +2167,7 @@ void TrainSidebar::loadUpdate()
     // therefore, use a QTime timer to measure the load period
     load_msecs += load_period.restart();
 
-    if (status&RT_MODE_ERGO) {
+    if (status&RT_MODE_ERGO) {        
         if (context->currentErgFile()) {
             load = ergFileQueryAdapter.wattsAt(load_msecs, curLap);
 
@@ -2182,10 +2182,16 @@ void TrainSidebar::loadUpdate()
         // we got to the end!
         if (load == -100) {
             Stop(DEVICE_OK);
+        } else if (status&RT_PAUSED) {
+            // If we pause during a harder segment, it's almost impossible to start pedaling
+            // again. Set resistance to a easy level to get the wheel spinning again.
+            // => Start pedaling on pause and then resume workout
+            foreach(int dev, activeDevices) Devices[dev].controller->setLoad(50);
+            context->notifySetNow(load_msecs);
         } else {
             foreach(int dev, activeDevices) Devices[dev].controller->setLoad(load);
             context->notifySetNow(load_msecs);
-        }
+        }        
     } else {
         if (context->currentErgFile()) {
             // Call gradientAt to obtain current lap num.

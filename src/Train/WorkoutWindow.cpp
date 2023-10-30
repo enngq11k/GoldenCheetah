@@ -22,17 +22,17 @@
 #include "WorkoutWidgetItems.h"
 #include "HelpWhatsThis.h"
 
-static int MINTOOLHEIGHT = 350; // smaller than this, lose the toolbar
+static int MINTOOLHEIGHT = 200; // smaller than this, lose the toolbar
 
 WorkoutWindow::WorkoutWindow(Context *context) :
     GcChartWindow(context), draw(true), context(context), active(false), recording(false),
     plotHr(true),
     plotPwr(true),
     plotCadence(true),
-    plotWbal(true),
-    plotVo2(true),
-    plotVentilation(true),
-    plotSpeed(true),
+    plotWbal(false),
+    plotVo2(false),
+    plotVentilation(false),
+    plotSpeed(false),
     plotHrAvg(1),
     plotPwrAvg(1),
     plotCadenceAvg(1),
@@ -335,6 +335,9 @@ WorkoutWindow::WorkoutWindow(Context *context) :
 
     // scrollbar
     connect(scroll, SIGNAL(sliderMoved(int)), this, SLOT(scrollMoved()));
+
+    // Always show properties editor in normal mode
+    properties();
 
     // set the widgets etc
     configChanged(CONFIG_APPEARANCE);
@@ -640,6 +643,7 @@ WorkoutWindow::stop()
     recording = false;
     if (height() > MINTOOLHEIGHT) toolbar->show();
     workout->stop();
+    properties();
 }
 
 void
