@@ -214,7 +214,7 @@ MainWindow::MainWindow(const QDir &home)
 
     // sidebar->addItem(QImage(":sidebar/plan.png"), tr("plan"), 1), tr("Feature not implemented yet");
     // sidebar->setItemEnabled(1, false
-    // sidebar->addItem(QImage(":sidebar/trends.png"), tr("trends"), 2, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Trends));
+    sidebar->addItem(QImage(":sidebar/trends.png"), tr("trends"), 2, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Trends));
     // sidebar->addItem(QImage(":sidebar/assess.png"), tr("activities"), 3, helpNewSideBar->getWhatsThisText(HelpWhatsThis::ScopeBar_Rides));
     // sidebar->setItemSelected(3, true);
 
@@ -643,7 +643,7 @@ MainWindow::MainWindow(const QDir &home)
 
     viewMenu->addSeparator();
     viewMenu->addAction(tr("Activities"), this, SLOT(selectAnalysis()));
-    // viewMenu->addAction(tr("Trends"), this, SLOT(selectTrends()));
+    viewMenu->addAction(tr("Trends"), this, SLOT(selectTrends()));
     viewMenu->addAction(tr("Train"), this, SLOT(selectTrain()));
     viewMenu->addSeparator();
     viewMenu->addAction(tr("Import Perspective..."), this, SLOT(importPerspective()));
