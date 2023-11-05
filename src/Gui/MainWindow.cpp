@@ -178,9 +178,9 @@ MainWindow::MainWindow(const QDir &home)
 
     // if no workout directory is configured, default to the
     // top level GoldenCheetah directory
-    QString workoutDir = appsettings->value(NULL, GC_WORKOUTDIR).toString();
-    if (workoutDir.isEmpty() || workoutDir == "0")
-        appsettings->setValue(GC_WORKOUTDIR, QFileInfo(context->athlete->home->root().canonicalPath()).path());    
+    if (appsettings->value(NULL, GC_WORKOUTDIR, "").toString() == ""){
+        appsettings->setValue(GC_WORKOUTDIR, QFileInfo(context->athlete->home->root().canonicalPath()).canonicalPath());
+    }
 
     /*----------------------------------------------------------------------
      *  GUI setup
