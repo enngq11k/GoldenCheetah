@@ -60,6 +60,10 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 
     lineAreaColor=QColor(Qt::darkGray);
     lineAreaText=QColor(Qt::white);
+
+    appendHtml("<font> Sample Text</font>");
+    //setStyleSheet("QPlainTextEdit { color: #0000ff; background-color: #ffffff; } ");
+    setBackgroundVisible(true);
 }
 
 
@@ -117,7 +121,8 @@ void CodeEditor::highlightCurrentLine()
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
-        selection.format.setBackground(lineAreaColor);
+        selection.format.setBackground(QColor(Qt::lightGray));
+        selection.format.setForeground(QColor(Qt::black));
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
         selection.cursor.clearSelection();
