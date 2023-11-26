@@ -31,7 +31,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QWidget(parent),
     m_trainSidebar(trainSidebar)
 {
-    int iconSize = 48;
+    int iconSize = 32;
 
     HelpWhatsThis *help = new HelpWhatsThis(this);
     this->setWhatsThis(help->getWhatsThisText(HelpWhatsThis::WorkoutControl));
@@ -100,7 +100,6 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     m_forwardButton->setShortcut(Qt::Key_MediaNext);
     toolbuttons->addWidget(m_forwardButton);
 
-    /*
     QIcon backLapIcon(":images/oxygen/back.png");
     backLap = new QPushButton(backLapIcon, "", this);
     backLap->setFocusPolicy(Qt::NoFocus);
@@ -136,7 +135,6 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     fwdLap->setAutoRepeatDelay(400);
     fwdLap->setShortcut(Qt::Key_MediaLast);
     toolbuttons->addWidget(fwdLap);
-    */
 
     QIcon calIcon(":images/oxygen/cal.png");
     cal = new QPushButton(calIcon, "", this);
@@ -194,7 +192,7 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     QFont font("Monospace");
     font.setStyleHint(QFont::TypeWriter);
     font.setBold(1);
-    font.setPointSize(14);
+    font.setPointSize(8);
 
     notificationText->setFont(font);
     notificationText->setStyleSheet("QPlainTextEdit {background-color: black; color: red}");
@@ -213,11 +211,11 @@ TrainBottom::TrainBottom(TrainSidebar *trainSidebar, QWidget *parent) :
     connect(m_playButton, SIGNAL(clicked()), m_trainSidebar, SLOT(Start()));
     connect(m_rewindButton, SIGNAL(clicked()), m_trainSidebar, SLOT(Rewind()));
     connect(m_forwardButton, SIGNAL(clicked()), m_trainSidebar, SLOT(FFwd()));
-    /*
+
     connect(backLap, SIGNAL(clicked()), m_trainSidebar, SLOT(RewindLap()));
     connect(m_lapButton, SIGNAL(clicked()), m_trainSidebar, SLOT(newLap()));
     connect(fwdLap, SIGNAL(clicked()), m_trainSidebar, SLOT(FFwdLap()));
-    */
+
     connect(m_stopButton, SIGNAL(clicked()), m_trainSidebar, SLOT(Stop()));
     //connect(hideOnIdle, SIGNAL(stateChanged(int)), this, SLOT(autoHideCheckboxChanged(int)));
     connect(m_trainSidebar, SIGNAL(statusChanged(int)), this, SLOT(statusChanged(int)));
@@ -306,12 +304,10 @@ void TrainBottom::statusChanged(int status)
         m_playButton->setEnabled(false);
         m_stopButton->setEnabled(false);
         m_forwardButton->setEnabled(false);
-        m_rewindButton->setEnabled(false);
-        /*
+        m_rewindButton->setEnabled(false);        
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
-        fwdLap->setEnabled(false);
-        */
+        fwdLap->setEnabled(false);        
         cal->setEnabled(false);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -329,11 +325,9 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(false);
         m_forwardButton->setEnabled(false);
         m_rewindButton->setEnabled(false);
-        /*
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
         fwdLap->setEnabled(false);
-        */
         cal->setEnabled(false);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -351,11 +345,9 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(true);
         m_forwardButton->setEnabled(false);
         m_rewindButton->setEnabled(false);
-        /*
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
         fwdLap->setEnabled(false);
-        */
         cal->setEnabled(false);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -373,11 +365,9 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(true);
         m_forwardButton->setEnabled(false);
         m_rewindButton->setEnabled(false);
-        /*
         backLap->setEnabled(false);
         m_lapButton->setEnabled(false);
         fwdLap->setEnabled(false);
-        */
         cal->setEnabled(true);
         loadUp->setEnabled(false);
         loadDown->setEnabled(false);
@@ -395,11 +385,9 @@ void TrainBottom::statusChanged(int status)
         m_stopButton->setEnabled(true);
         m_forwardButton->setEnabled(true);
         m_rewindButton->setEnabled(true);
-        /*
         backLap->setEnabled(true);
         m_lapButton->setEnabled(true);
         fwdLap->setEnabled(true);
-        */
         cal->setEnabled(true);
         loadUp->setEnabled(true);
         loadDown->setEnabled(true);
@@ -418,8 +406,9 @@ void TrainBottom::setVisibility(bool want)
     m_trainSidebar->context->mainWindow->showLowbar(want);
 }
 
-void TrainBottom::setNotification(QString msg, int timeout)
+void TrainBottom::setNotification(QString msg, int /*timeout*/)
 {
+    /*
     if (timeout > 0) {
         notificationTimer->setInterval(timeout * 1000);
         notificationTimer->setSingleShot(true);
@@ -428,9 +417,10 @@ void TrainBottom::setNotification(QString msg, int timeout)
         // stop any running timer
         notificationTimer->stop();
     }
+    */
 
-    notificationText->clear();
-    notificationText->setPlainText(msg);
+    // notificationText->clear();
+    notificationText->appendPlainText(msg);
 }
 
 void TrainBottom::clearNotification(void)
