@@ -61,8 +61,6 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     lineAreaColor=QColor(Qt::darkGray);
     lineAreaText=QColor(Qt::white);
 
-    appendHtml("<font> Sample Text</font>");
-    //setStyleSheet("QPlainTextEdit { color: #0000ff; background-color: #ffffff; } ");
     setBackgroundVisible(true);
 }
 
