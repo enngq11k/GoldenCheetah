@@ -1628,8 +1628,12 @@ double ErgFile::nextLap(double x) const
     // do we need to return the Lap marker?
     if (Laps.count() > 0) {
         // If the current position is before the start the lap, then the lap is next
-        for (int i=0; i<Laps.count(); i++) {
-            if (x<Laps.at(i).x) return Laps.at(i).x;
+        // Skip last lap (training finish) to avoid unexpected end of training. Just
+        // use stop or escape to finish
+        for (int i=0; i<Laps.count() - 1; i++) {
+            if (x<Laps.at(i).x) {
+                return Laps.at(i).x;
+            }
         }
     }
     return -1; // nope, no marker ahead of there
