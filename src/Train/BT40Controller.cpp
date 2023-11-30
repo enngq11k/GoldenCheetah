@@ -145,16 +145,6 @@ BT40Controller::addDevice(const QBluetoothDeviceInfo &info)
             }
         }
 
-        auto name = info.name();
-
-        if (!name.startsWith("Polar V")
-         && !name.startsWith("KICKR"))
-        {
-            return;
-        }
-
-        emit setNotification(name, 2);
-
         BT40Device* dev = new BT40Device(this, info);
         devices.append(dev);
 
