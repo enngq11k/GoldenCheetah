@@ -255,6 +255,7 @@ DeviceScanner::quickScan(bool deep) // scan quickly or if true scan forever, as 
             if (!deep) return false;
         }
     
+    
         //----------------------------------------------------------------------
         // Search serial ports
         //----------------------------------------------------------------------
@@ -1025,14 +1026,20 @@ AddPairBTLE::scanFinished(bool foundDevices)
         {
             QTreeWidgetItem *add = new QTreeWidgetItem(channelWidget->invisibleRootItem());
 
+            // Remove chars used as separator in storage
+            QString deviceName = deviceInfo.name();
+            deviceName.replace(';', ' ');
+            deviceName.replace(',', ' ');
+            deviceName = deviceName.trimmed();
+
             // Save device info in item
-            add->setData(0, NameRole, deviceInfo.name());
-            add->setData(0, AddressRole, deviceInfo.address().toString()); // macOS
-            add->setData(0, UuidRole, deviceInfo.deviceUuid().toString()); // other OS
+            add->setData(0, NameRole, deviceName);
+            add->setData(0, AddressRole, deviceInfo.address().toString()); // other OS
+            add->setData(0, UuidRole, deviceInfo.deviceUuid().toString()); // macOS
 
             // Setup display text
             QLabel *status = new QLabel(this);
-            status->setText(deviceInfo.name());
+            status->setText(deviceName);
             channelWidget->setItemWidget(add, 0, status);
         }
     }
@@ -1059,16 +1066,21 @@ AddPairBTLE::validatePage()
 
         if (item->isSelected())
         {
-            QVariant name = item->data(0, NameRole);
-            QVariant address = item->data(0, AddressRole);
-            QVariant uuid = item->data(0, UuidRole);
+            // pack into device info for validation
+            DeviceInfo deviceInfo(
+                        item->data(0, NameRole).toString(),
+                        item->data(0, AddressRole).toString(),
+                        item->data(0, UuidRole).toString());
 
-            // Split sensors with ','
-            // Split name, address and uuid with ';'
-            wizard->profile += QString(wizard->profile != "" ? ", %1;%2;%3" : "%1;%2;%3")
-                               .arg(name.toString())
-                               .arg(address.toString())
-                               .arg(uuid.toString());
+            if (deviceInfo.isValid())
+            {
+                // Split sensors with ','
+                // Split name, address and uuid with ';'
+                wizard->profile += QString(wizard->profile != "" ? ", %1;%2;%3" : "%1;%2;%3")
+                                   .arg(deviceInfo.getName())
+                                   .arg(deviceInfo.getAddress())
+                                   .arg(deviceInfo.getUuid());
+            }
         }
     }
 
