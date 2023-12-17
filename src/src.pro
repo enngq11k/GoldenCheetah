@@ -41,7 +41,7 @@ CONFIG(debug, debug|release) { QMAKE_CXXFLAGS += -DGC_DEBUG }
 # always
 QT += xml sql network svg  widgets concurrent serialport multimedia multimediawidgets \
       webengine webenginecore webenginewidgets webchannel positioning
-CONFIG += c++11
+CONFIG += c++17
 
 
 ###=======================================================================
