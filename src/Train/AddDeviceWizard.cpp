@@ -1023,23 +1023,27 @@ AddPairBTLE::scanFinished(bool foundDevices)
     {
         foreach(QBluetoothDeviceInfo deviceInfo, dynamic_cast<BT40Controller*>(wizard->controller)->getDeviceInfo())
         {
-            QTreeWidgetItem *add = new QTreeWidgetItem(channelWidget->invisibleRootItem());
+            if (!deviceInfo.name().isEmpty()
+                && deviceInfo.name() != deviceInfo.address().toString())
+            {
+                QTreeWidgetItem *add = new QTreeWidgetItem(channelWidget->invisibleRootItem());
 
-            // Remove chars used as separator in storage
-            QString deviceName = deviceInfo.name();
-            deviceName.replace(';', ' ');
-            deviceName.replace(',', ' ');
-            deviceName = deviceName.trimmed();
+                // Remove chars used as separator in storage
+                QString deviceName = deviceInfo.name();
+                deviceName.replace(';', ' ');
+                deviceName.replace(',', ' ');
+                deviceName = deviceName.trimmed();
 
-            // Save device info in item
-            add->setData(0, NameRole, deviceName);
-            add->setData(0, AddressRole, deviceInfo.address().toString()); // other OS
-            add->setData(0, UuidRole, deviceInfo.deviceUuid().toString()); // macOS
+                // Save device info in item
+                add->setData(0, NameRole, deviceName);
+                add->setData(0, AddressRole, deviceInfo.address().toString()); // other OS
+                add->setData(0, UuidRole, deviceInfo.deviceUuid().toString()); // macOS
 
-            // Setup display text
-            QLabel *status = new QLabel(this);
-            status->setText(deviceName);
-            channelWidget->setItemWidget(add, 0, status);
+                // Setup display text
+                QLabel *name = new QLabel(this);
+                name->setText(deviceName);
+                channelWidget->setItemWidget(add, 0, name);
+            }
         }
     }
     else
