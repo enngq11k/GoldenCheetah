@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -15,21 +15,21 @@
 #include "qwt_axis_id.h"
 
 /*!
-   \brief Layout engine for QwtPlot.
+  \brief Layout engine for QwtPlot.
 
-   It is used by the QwtPlot widget to organize its internal widgets
-   or by QwtPlot::print() to render its content to a QPaintDevice like
-   a QPrinter, QPixmap/QImage or QSvgRenderer.
+  It is used by the QwtPlot widget to organize its internal widgets
+  or by QwtPlot::print() to render its content to a QPaintDevice like
+  a QPrinter, QPixmap/QImage or QSvgRenderer.
 
-   \sa QwtPlot::setPlotLayout()
- */
+  \sa QwtPlot::setPlotLayout()
+*/
 
 class QWT_EXPORT QwtPlotLayout
 {
-  public:
+public:
     /*!
-       Options to configure the plot layout engine
-       \sa activate(), QwtPlotRenderer
+      Options to configure the plot layout engine
+      \sa update(), QwtPlotRenderer
      */
     enum Option
     {
@@ -37,12 +37,12 @@ class QWT_EXPORT QwtPlotLayout
         AlignScales = 0x01,
 
         /*!
-           Ignore the dimension of the scrollbars. There are no
-           scrollbars, when the plot is not rendered to widgets.
+          Ignore the dimension of the scrollbars. There are no
+          scrollbars, when the plot is not rendered to widgets.
          */
         IgnoreScrollbars = 0x02,
 
-        //! Ignore all frames.
+        //! Ignore all frames. 
         IgnoreFrames = 0x04,
 
         //! Ignore the legend.
@@ -55,13 +55,14 @@ class QWT_EXPORT QwtPlotLayout
         IgnoreFooter = 0x20
     };
 
-    Q_DECLARE_FLAGS( Options, Option )
+    //! Layout options
+    typedef QFlags<Option> Options;
 
     explicit QwtPlotLayout();
     virtual ~QwtPlotLayout();
 
     void setCanvasMargin( int margin, int axis = -1 );
-    int canvasMargin( int axisId ) const;
+    int canvasMargin( int axis ) const;
 
     void setAlignCanvasToScales( bool );
 
@@ -78,32 +79,33 @@ class QWT_EXPORT QwtPlotLayout
     void setLegendRatio( double ratio );
     double legendRatio() const;
 
-    virtual QSize minimumSizeHint( const QwtPlot* ) const;
+    virtual QSize minimumSizeHint( const QwtPlot * ) const;
 
-    virtual void activate( const QwtPlot*,
-        const QRectF& plotRect, Options options = Options() );
+    void update( const QwtPlot *,
+        const QRectF &rect, Options options = 0x00 );
 
     virtual void invalidate();
 
     QRectF titleRect() const;
     QRectF footerRect() const;
     QRectF legendRect() const;
-    QRectF scaleRect( QwtAxisId ) const;
+    QRectF scaleRect( QwtAxisId axis ) const;
     QRectF canvasRect() const;
 
-  protected:
 
-    void setTitleRect( const QRectF& );
-    void setFooterRect( const QRectF& );
-    void setLegendRect( const QRectF& );
-    void setScaleRect( QwtAxisId, const QRectF& );
-    void setCanvasRect( const QRectF& );
+protected:
+    virtual void activate( const QwtPlot *,
+        const QRectF &rect, Options options );
 
-  private:
-    Q_DISABLE_COPY(QwtPlotLayout)
+    void setTitleRect( const QRectF & );
+    void setFooterRect( const QRectF & );
+    void setLegendRect( const QRectF & );
+    void setScaleRect( QwtAxisId axis, const QRectF & );
+    void setCanvasRect( const QRectF & );
 
+private:
     class PrivateData;
-    PrivateData* m_data;
+    PrivateData *d_data;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QwtPlotLayout::Options )

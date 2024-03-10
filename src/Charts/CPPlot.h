@@ -36,6 +36,7 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_spectrocurve.h>
 #include <qwt_point_3d.h>
+#include <qwt_compat.h>
 
 #include <QtGui>
 #include <QMessageBox>

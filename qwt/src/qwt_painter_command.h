@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -11,7 +11,6 @@
 #define QWT_PAINTER_COMMAND_H
 
 #include "qwt_global.h"
-
 #include <qpaintengine.h>
 #include <qpixmap.h>
 #include <qimage.h>
@@ -21,17 +20,17 @@
 class QPainterPath;
 
 /*!
-   QwtPainterCommand represents the attributes of a paint operation
-   how it is used between QPainter and QPaintDevice
+  QwtPainterCommand represents the attributes of a paint operation
+  how it is used between QPainter and QPaintDevice
 
-   It is used by QwtGraphic to record and replay paint operations
+  It is used by QwtGraphic to record and replay paint operations
 
-   \sa QwtGraphic::commands()
+  \sa QwtGraphic::commands()
  */
-
+  
 class QWT_EXPORT QwtPainterCommand
 {
-  public:
+public:
     //! Type of the paint command
     enum Type
     {
@@ -51,7 +50,7 @@ class QWT_EXPORT QwtPainterCommand
         State
     };
 
-    //! Attributes how to paint a QPixmap
+    //! Attributes how to paint a QPixmap 
     struct PixmapData
     {
         QRectF rect;
@@ -59,7 +58,7 @@ class QWT_EXPORT QwtPainterCommand
         QRectF subRect;
     };
 
-    //! Attributes how to paint a QImage
+    //! Attributes how to paint a QImage 
     struct ImageData
     {
         QRectF rect;
@@ -79,6 +78,7 @@ class QWT_EXPORT QwtPainterCommand
         QBrush backgroundBrush;
         Qt::BGMode backgroundMode;
         QFont font;
+        QMatrix matrix;
         QTransform transform;
 
         Qt::ClipOperation clipOperation;
@@ -92,27 +92,27 @@ class QWT_EXPORT QwtPainterCommand
     };
 
     QwtPainterCommand();
-    QwtPainterCommand(const QwtPainterCommand&);
+    QwtPainterCommand(const QwtPainterCommand &);
 
-    explicit QwtPainterCommand( const QPainterPath& );
+    QwtPainterCommand( const QPainterPath & );
 
-    QwtPainterCommand( const QRectF& rect,
-        const QPixmap&, const QRectF& subRect );
+    QwtPainterCommand( const QRectF &rect,
+            const QPixmap &, const QRectF& subRect );
 
-    QwtPainterCommand( const QRectF& rect,
-        const QImage&, const QRectF& subRect,
-        Qt::ImageConversionFlags );
+    QwtPainterCommand( const QRectF &rect,
+            const QImage &, const QRectF& subRect,
+            Qt::ImageConversionFlags );
 
-    explicit QwtPainterCommand( const QPaintEngineState& );
+    QwtPainterCommand( const QPaintEngineState & );
 
     ~QwtPainterCommand();
 
-    QwtPainterCommand& operator=(const QwtPainterCommand& );
+    QwtPainterCommand &operator=(const QwtPainterCommand & );
 
     Type type() const;
 
-    QPainterPath* path();
-    const QPainterPath* path() const;
+    QPainterPath *path();
+    const QPainterPath *path() const;
 
     PixmapData* pixmapData();
     const PixmapData* pixmapData() const;
@@ -123,52 +123,52 @@ class QWT_EXPORT QwtPainterCommand
     StateData* stateData();
     const StateData* stateData() const;
 
-  private:
-    void copy( const QwtPainterCommand& );
+private:
+    void copy( const QwtPainterCommand & );
     void reset();
 
-    Type m_type;
+    Type d_type;
 
     union
     {
-        QPainterPath* m_path;
-        PixmapData* m_pixmapData;
-        ImageData* m_imageData;
-        StateData* m_stateData;
+        QPainterPath *d_path;
+        PixmapData *d_pixmapData;
+        ImageData *d_imageData;
+        StateData *d_stateData;
     };
 };
 
 //! \return Type of the command
 inline QwtPainterCommand::Type QwtPainterCommand::type() const
 {
-    return m_type;
+    return d_type;
 }
 
 //! \return Painter path to be painted
-inline const QPainterPath* QwtPainterCommand::path() const
+inline const QPainterPath *QwtPainterCommand::path() const
 {
-    return m_path;
+    return d_path;
 }
 
 //! \return Attributes how to paint a QPixmap
-inline const QwtPainterCommand::PixmapData*
+inline const QwtPainterCommand::PixmapData* 
 QwtPainterCommand::pixmapData() const
 {
-    return m_pixmapData;
+    return d_pixmapData;
 }
 
 //! \return Attributes how to paint a QImage
-inline const QwtPainterCommand::ImageData*
+inline const QwtPainterCommand::ImageData * 
 QwtPainterCommand::imageData() const
 {
-    return m_imageData;
+    return d_imageData;
 }
 
 //! \return Attributes of a state change
-inline const QwtPainterCommand::StateData*
+inline const QwtPainterCommand::StateData * 
 QwtPainterCommand::stateData() const
 {
-    return m_stateData;
+    return d_stateData;
 }
 
 #endif

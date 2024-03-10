@@ -1,67 +1,59 @@
-/*****************************************************************************
- * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
- * This file may be used under the terms of the 3-clause BSD License
- *****************************************************************************/
+#include <qapplication.h>
+#include <qmainwindow.h>
+#include <qtoolbar.h>
+#include <qtoolbutton.h>
+#include <qcombobox.h>
+#include <qlabel.h>
+#include "plot.h"
 
-#include "Plot.h"
-
-#include <QApplication>
-#include <QMainWindow>
-#include <QToolBar>
-#include <QToolButton>
-#include <QComboBox>
-#include <QLabel>
-
-namespace
+class MainWindow: public QMainWindow
 {
-    class MainWindow : public QMainWindow
-    {
-      public:
-        MainWindow( QWidget* parent = NULL )
-            : QMainWindow( parent )
-        {
-            Plot* plot = new Plot( this );
-            setCentralWidget( plot );
+public:
+    MainWindow( QWidget * = NULL );
+};
 
-            QToolBar* toolBar = new QToolBar( this );
+MainWindow::MainWindow( QWidget *parent ):
+    QMainWindow( parent )
+{
+    Plot *plot = new Plot( this );
+    setCentralWidget( plot );
 
-            QComboBox* rasterBox = new QComboBox( toolBar );
-            rasterBox->addItem( "Wikipedia" );
+    QToolBar *toolBar = new QToolBar( this );
 
-            toolBar->addWidget( new QLabel( "Data ", toolBar ) );
-            toolBar->addWidget( rasterBox );
-            toolBar->addSeparator();
+    QComboBox *rasterBox = new QComboBox( toolBar );
+    rasterBox->addItem( "Wikipedia" );
 
-            QComboBox* modeBox = new QComboBox( toolBar );
-            modeBox->addItem( "Nearest Neighbour" );
-            modeBox->addItem( "Bilinear Interpolation" );
-            modeBox->addItem( "Bicubic Interpolation" );
+    toolBar->addWidget( new QLabel( "Data ", toolBar ) );
+    toolBar->addWidget( rasterBox );
+    toolBar->addSeparator();
 
-            toolBar->addWidget( new QLabel( "Resampling ", toolBar ) );
-            toolBar->addWidget( modeBox );
+    QComboBox *modeBox = new QComboBox( toolBar );
+    modeBox->addItem( "Nearest Neighbour" );
+    modeBox->addItem( "Bilinear Interpolation" );
 
-            toolBar->addSeparator();
+    toolBar->addWidget( new QLabel( "Resampling ", toolBar ) );
+    toolBar->addWidget( modeBox );
 
-            QToolButton* btnExport = new QToolButton( toolBar );
-            btnExport->setText( "Export" );
-            btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-            toolBar->addWidget( btnExport );
+    toolBar->addSeparator();
 
-            addToolBar( toolBar );
+    QToolButton *btnExport = new QToolButton( toolBar );
+    btnExport->setText( "Export" );
+    btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+    toolBar->addWidget( btnExport );
 
-            connect( modeBox, SIGNAL(activated(int)), plot, SLOT(setResampleMode(int)) );
-            connect( btnExport, SIGNAL(clicked()), plot, SLOT(exportPlot()) );
-        }
-    };
+    addToolBar( toolBar );
+
+    connect( modeBox, SIGNAL( activated( int ) ), plot, SLOT( setResampleMode( int ) ) );
+    connect( btnExport, SIGNAL( clicked() ), plot, SLOT( exportPlot() ) );
 }
 
-int main( int argc, char* argv[] )
+int main( int argc, char **argv )
 {
-    QApplication app( argc, argv );
+    QApplication a( argc, argv );
 
-    MainWindow window;
-    window.resize( 600, 400 );
-    window.show();
+    MainWindow mainWindow;
+    mainWindow.resize( 600, 400 );
+    mainWindow.show();
 
-    return app.exec();
+    return a.exec();
 }

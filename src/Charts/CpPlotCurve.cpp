@@ -3,7 +3,6 @@
 #include "qwt_color_map.h"
 #include "qwt_scale_map.h"
 #include "qwt_painter.h"
-#include "qwt_text.h"
 #include <qpainter.h>
 
 class CpPlotCurve::PrivateData
@@ -206,10 +205,8 @@ void CpPlotCurve::drawDots( QPainter *painter,
     const bool doAlign = QwtPainter::roundingAlignment( painter );
 
     const QwtColorMap::Format format = d_data->colorMap->format();
-    if ( format == QwtColorMap::Indexed ) {
-        auto vector = d_data->colorMap->colorTable(256);
-        d_data->colorTable = vector;
-    }
+    if ( format == QwtColorMap::Indexed )
+        d_data->colorTable = d_data->colorMap->colorTable( d_data->colorRange );
 
     const QwtSeriesData<QwtPoint3D> *series = data();
 
@@ -241,7 +238,7 @@ void CpPlotCurve::drawDots( QPainter *painter,
         else
         {
             const unsigned char index = d_data->colorMap->colorIndex(
-                256, d_data->colorRange, sample.z() );
+                d_data->colorRange, sample.z() );
 
             painter->setPen( QPen( QColor::fromRgba( d_data->colorTable[index] ), 
                 d_data->penWidth ) );
@@ -265,7 +262,7 @@ CpPlotCurve::drawLines( QPainter *painter,
 
     const QwtColorMap::Format format = d_data->colorMap->format();
     if ( format == QwtColorMap::Indexed )
-        d_data->colorTable = d_data->colorMap->colorTable( 256 );
+        d_data->colorTable = d_data->colorMap->colorTable( d_data->colorRange );
 
     const bool noDuplicates = d_data->paintAttributes & CpPlotCurve::FilterPoints;
 
@@ -345,7 +342,7 @@ CpPlotCurve::drawLines( QPainter *painter,
          else
          {
              const unsigned char index = d_data->colorMap->colorIndex(
-                 256, d_data->colorRange, sample.z() );
+                 d_data->colorRange, sample.z() );
 
              painter->setPen( QPen( QColor::fromRgba( d_data->colorTable[index] ),
                  width ) );

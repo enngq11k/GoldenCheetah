@@ -48,26 +48,26 @@ PerfPlot::PerfPlot() : STScurve(NULL), LTScurve(NULL), SBcurve(NULL), DAYcurve(N
 {
     xsd = new PPTimeScaleDraw(QDateTime());
     xsd->setTickLength(QwtScaleDiv::MajorTick, 3);
-    setAxisScaleDraw(QwtAxis::XBottom, xsd);
+    setAxisScaleDraw(QwtPlot::xBottom, xsd);
 
     insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
-    setAxisTitle(YLeft, tr("Exponentially Weighted Average Stress"));
-    setAxisTitle(XBottom, tr("Time (days)"));
-    setAxisTitle(QwtAxis::YRight, tr("Daily Stress"));
-    setAxisVisible(QwtAxis::YRight, true);
+    setAxisTitle(yLeft, tr("Exponentially Weighted Average Stress"));
+    setAxisTitle(xBottom, tr("Time (days)"));
+    setAxisTitle(yRight, tr("Daily Stress"));
+    enableAxis(yRight, true);
     static_cast<QwtPlotCanvas*>(canvas())->setFrameStyle(QFrame::NoFrame);
 
-    setAxisMaxMinor(XBottom, 0);
-    setAxisMaxMinor(YLeft, 0);
-    setAxisMaxMinor(QwtAxis::YRight, 0);
+    setAxisMaxMinor(xBottom, 0);
+    setAxisMaxMinor(yLeft, 0);
+    setAxisMaxMinor(yRight, 0);
 
     QwtScaleDraw *sd = new QwtScaleDraw;
     sd->setTickLength(QwtScaleDiv::MajorTick, 3);
-    setAxisScaleDraw(QwtAxis::YLeft, sd);
+    setAxisScaleDraw(QwtPlot::yLeft, sd);
 
     sd = new QwtScaleDraw;
     sd->setTickLength(QwtScaleDiv::MajorTick, 3);
-    setAxisScaleDraw(QwtAxis::YRight, sd);
+    setAxisScaleDraw(QwtPlot::yRight, sd);
 
     grid = new QwtPlotGrid();
     grid->attach(this);
@@ -99,7 +99,7 @@ void PerfPlot::plot() {
     int  num, tics;
     tics = 42;
 
-    setAxisScale(YLeft, _sc->min(), _sc->max());
+    setAxisScale(yLeft, _sc->min(), _sc->max());
     num = xmax - xmin;
 
     /*
@@ -117,8 +117,8 @@ void PerfPlot::plot() {
     } else if (num < 364) {
 	tics  = 27;
     }
-    setAxisScale(XBottom, xmin, xmax,tics);
-    axisWidget(XBottom)->update();
+    setAxisScale(xBottom, xmin, xmax,tics);
+    axisWidget(xBottom)->update();
 
     // set base
     xsd->setBase(startDate);
@@ -142,7 +142,7 @@ void PerfPlot::plot() {
     //                                     |
     //                                     V
     DAYcurve->setSamples(_sc->getDays()+xmin -1 ,_sc->getDAYvalues()+xmin,num);
-    DAYcurve->setYAxis(QwtAxis::YRight);
+    DAYcurve->setYAxis(yRight);
     DAYcurve->attach(this);
 
     if (STScurve) {
@@ -186,7 +186,7 @@ void PerfPlot::plot() {
     SBcurve->setSamples(_sc->getDays()+xmin,_sc->getSBvalues()+xmin,num);
     SBcurve->attach(this);
 
-    axisWidget(QwtAxis::XBottom)->update();
+    axisWidget(QwtPlot::xBottom)->update();
     replot();
 
 }

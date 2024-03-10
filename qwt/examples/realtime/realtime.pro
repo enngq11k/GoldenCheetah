@@ -1,24 +1,28 @@
-######################################################################
-# Qwt Examples - Copyright (C) 2002 Uwe Rathmann
-# This file may be used under the terms of the 3-clause BSD License
-######################################################################
+################################################################
+# Qwt Widget Library
+# Copyright (C) 1997   Josef Wilgen
+# Copyright (C) 2002   Uwe Rathmann
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the Qwt License, Version 1.0
+################################################################
 
 include( $${PWD}/../examples.pri )
 
 TARGET       = realtime
 
 HEADERS = \
-    ScrollZoomer.h \
-    ScrollBar.h \
-    IncrementalPlot.h \
-    RandomPlot.h \
-    MainWindow.h
+    mainwindow.h \
+    scrollzoomer.h \
+    scrollbar.h \
+    incrementalplot.h \
+    randomplot.h
 
 SOURCES = \
-    ScrollZoomer.cpp \
-    ScrollBar.cpp \
-    IncrementalPlot.cpp \
-    RandomPlot.cpp \
-    MainWindow.cpp \
-    main.cpp
+    main.cpp \
+    mainwindow.cpp \
+    scrollzoomer.cpp \
+    scrollbar.cpp \
+    incrementalplot.cpp \
+    randomplot.cpp
 

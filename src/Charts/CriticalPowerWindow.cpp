@@ -39,6 +39,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_series_data.h>
 #include <qwt_scale_div.h>
+#include <qwt_compat.h>
 #include <QFile>
 #include "Season.h"
 #include "SeasonParser.h"
@@ -430,9 +431,9 @@ CriticalPowerWindow::CriticalPowerWindow(Context *context, bool rangemode) :
     grid->enableX(false); // not needed
     grid->enableY(true);
     grid->setZ(-20);
-    QList<double> ytick[QwtScaleDiv::NTickTypes];
+    QwtValueList ytick[QwtScaleDiv::NTickTypes];
     for (double i=0.0; i<=2500; i+= 100) ytick[QwtScaleDiv::MajorTick]<<i;
-    cpPlot->setAxisScaleDiv(QwtAxis::YLeft,QwtScaleDiv(0.0,2500.0,ytick));
+    cpPlot->setAxisScaleDiv(QwtPlot::yLeft,QwtScaleDiv(0.0,2500.0,ytick));
     grid->attach(cpPlot);
 
     // the model helper -- showing model parameters etc
@@ -1167,7 +1168,7 @@ CriticalPowerWindow::intervalHover(IntervalItem* x)
         hoverCurve = new QwtPlotCurve("Interval");
         hoverCurve->setPen(pen);
         if (appsettings->value(this, GC_ANTIALIAS, true).toBool() == true) hoverCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-        hoverCurve->setYAxis(QwtAxis::YLeft);
+        hoverCurve->setYAxis(QwtPlot::yLeft);
         hoverCurve->setSamples(array);
         hoverCurve->setVisible(true);
         hoverCurve->setZ(100);

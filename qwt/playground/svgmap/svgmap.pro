@@ -1,25 +1,26 @@
-######################################################################
-# Qwt Examples - Copyright (C) 2002 Uwe Rathmann
-# This file may be used under the terms of the 3-clause BSD License
-######################################################################
+################################################################
+# Qwt Widget Library
+# Copyright (C) 1997   Josef Wilgen
+# Copyright (C) 2002   Uwe Rathmann
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the Qwt License, Version 1.0
+################################################################
 
 include( $${PWD}/../playground.pri )
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    !qtHaveModule(svg) {
-        error("Qt has been built without SVG support !")
-    }
+!contains(QWT_CONFIG, QwtSvg) {
+
+    message(Are you trying to build Qwt with the Qt Creator as Shadow Build ?)
+    error(Qwt is configured without SVG support !)
 }
 
 TARGET   = svgmap
 QT      += svg
 
-RESOURCES += \
-    svgmap.qrc
-
 HEADERS = \
-    Plot.h
+    plot.h
 
 SOURCES = \
-    Plot.cpp \
+    plot.cpp \
     main.cpp

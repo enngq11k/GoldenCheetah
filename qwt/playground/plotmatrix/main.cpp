@@ -1,80 +1,66 @@
-/*****************************************************************************
- * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
- * This file may be used under the terms of the 3-clause BSD License
- *****************************************************************************/
+#include "plotmatrix.h"
+#include <qwt_plot_grid.h>
+#include <qwt_scale_widget.h>
+#include <qapplication.h>
+#include <qpen.h>
+#include <qmath.h>
 
-#include "PlotMatrix.h"
-
-#include <QwtPlotGrid>
-#include <QwtPlot>
-#include <QwtScaleWidget>
-#include <QwtMath>
-
-#include <QApplication>
-
-namespace
+class MainWindow: public PlotMatrix
 {
-    class MainWindow : public PlotMatrix
-    {
-      public:
-        MainWindow();
-    };
-}
+public:
+    MainWindow();
+};
 
-MainWindow::MainWindow()
-    : PlotMatrix( 3, 4 )
+MainWindow::MainWindow():
+    PlotMatrix( 3, 4 )
 {
-    using namespace QwtAxis;
-
-    setAxisVisible( YLeft );
-    setAxisVisible( YRight );
-    setAxisVisible( XBottom );
+    enableAxis( QwtAxis::yLeft );
+    enableAxis( QwtAxis::yRight );
+    enableAxis( QwtAxis::xBottom );
 
     for ( int row = 0; row < numRows(); row++ )
     {
-        const double v = std::pow( 10.0, row );
-
-        setAxisScale( YLeft, row, -v, v );
-        setAxisScale( YRight, row, -v, v );
+        const double v = qPow( 10.0, row );
+        setAxisScale( QwtAxis::yLeft, row, -v, v );
+        setAxisScale( QwtAxis::yRight, row, -v, v );
     }
 
     for ( int col = 0; col < numColumns(); col++ )
     {
-        const double v = std::pow( 10.0, col );
-
-        setAxisScale( XBottom, col, -v, v );
-        setAxisScale( XTop, col, -v, v );
+        const double v = qPow( 10.0, col );
+        setAxisScale( QwtAxis::xBottom, col, -v, v );
+        setAxisScale( QwtAxis::xTop, col, -v, v );
     }
 
     for ( int row = 0; row < numRows(); row++ )
     {
         for ( int col = 0; col < numColumns(); col++ )
         {
-            QwtPlot* plot = plotAt( row, col );
+            QwtPlot *plot = plotAt( row, col );
             plot->setCanvasBackground( QColor( Qt::darkGray ) );
 
-            QwtPlotGrid* grid = new QwtPlotGrid();
+            QwtPlotGrid *grid = new QwtPlotGrid();
             grid->enableXMin( true );
             grid->setMajorPen( Qt::white, 0, Qt::DotLine );
-            grid->setMinorPen( Qt::gray, 0, Qt::DotLine );
+            grid->setMinorPen( Qt::gray, 0 , Qt::DotLine );
             grid->attach( plot );
         }
     }
 
-    plotAt( 1, 0 )->axisWidget( YLeft )->setLabelRotation( 45 );
-    plotAt( 1, numColumns() - 1 )->axisWidget( YRight )->setLabelRotation( -45 );
+    plotAt( 1, 0 )->axisWidget( QwtAxis::yLeft )->setLabelRotation( 45 );
+    plotAt( 1, numColumns() - 1 )->axisWidget( QwtAxis::yRight )->setLabelRotation( -45 );
 
     updateLayout();
 }
 
-int main( int argc, char* argv[] )
+int main( int argc, char **argv )
 {
-    QApplication app( argc, argv );
+    QApplication a( argc, argv );
 
-    MainWindow window;
+    MainWindow mainWindow;
 
-    window.resize( 800, 600 );
-    window.show();
+    mainWindow.resize( 800, 600 );
+    mainWindow.show();
 
-    return app.exec();
+    return a.exec();
 }

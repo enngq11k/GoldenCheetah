@@ -63,7 +63,7 @@ cache:
 - C:\R
 - C:\Python -> src\Python\requirements.txt
 - c:\tools\vcpkg\installed\
-- qwt -> qwt/qwtconfig.pri.in
+- qwt
 
 install:
 # Get the libraries

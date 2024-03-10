@@ -32,9 +32,9 @@
 #include <qwt_plot_marker.h>
 #include <qwt_scale_draw.h>
 #include <qwt_scale_div.h>
-#include <qwt_scale_map.h>
 #include <qwt_scale_widget.h>
 #include <qwt_symbol.h>
+#include <qwt_compat.h>
 #include "ErgFile.h"
 #include "WPrime.h"
 
@@ -47,7 +47,7 @@
 
 #define DEFAULT_TAU 450
 
-class ErgFileData : public QwtPointArrayData<double>
+class ErgFileData : public QwtPointArrayData
 {
     public:
     ErgFileData (Context *context) : QwtPointArrayData(QVector<double>(), QVector<double>()), context(context) {}
@@ -65,7 +65,7 @@ class ErgFileData : public QwtPointArrayData<double>
     virtual QRectF boundingRect() const;
 };
 
-class NowData : public QwtPointArrayData<double>
+class NowData : public QwtPointArrayData
 {
     public:
     NowData (Context *context) : QwtPointArrayData(QVector<double>(), QVector<double>()), context(context) {}
@@ -102,8 +102,8 @@ public:
 
 private:
     int d_count;
-    QVector<double> d_x;
-    QVector<double> d_y;
+    QwtArray<double> d_x;
+    QwtArray<double> d_y;
 };
 
 class DistScaleDraw: public QwtScaleDraw

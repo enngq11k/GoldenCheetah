@@ -58,30 +58,30 @@ void SpinScanData::init() { }
 SpinScanPlot::SpinScanPlot(QWidget *parent, uint8_t *spinData) : QwtPlot(parent), leftCurve(NULL), rightCurve(NULL), spinData(spinData)
 {
     // Setup the axis
-    setAxisTitle(QwtAxis::YLeft, "SpinScan");
-    setAxisMaxMinor(QwtAxis::XBottom, 0);
-    setAxisMaxMinor(QwtAxis::YLeft, 0);
+    setAxisTitle(yLeft, "SpinScan");
+    setAxisMaxMinor(xBottom, 0);
+    setAxisMaxMinor(yLeft, 0);
 
     QPalette pal;
-    setAxisScale(QwtAxis::YLeft, 0, 90); // max 8 bit plus a little
-    setAxisScale(QwtAxis::XBottom, 0, 24); // max 8 bit plus a little
+    setAxisScale(yLeft, 0, 90); // max 8 bit plus a little
+    setAxisScale(xBottom, 0, 24); // max 8 bit plus a little
     pal.setColor(QPalette::WindowText, GColor(CSPINSCANLEFT));
     pal.setColor(QPalette::Text, GColor(CSPINSCANLEFT));
-    axisWidget(QwtAxis::YLeft)->setPalette(pal);
-    axisWidget(QwtAxis::YLeft)->scaleDraw()->setTickLength(QwtScaleDiv::MajorTick, 3);
+    axisWidget(QwtPlot::yLeft)->setPalette(pal);
+    axisWidget(QwtPlot::yLeft)->scaleDraw()->setTickLength(QwtScaleDiv::MajorTick, 3);
 
-    setAxisVisible(QwtAxis::XBottom, false); // very little value and some cpu overhead
-    setAxisVisible(QwtAxis::YLeft, true);
+    enableAxis(xBottom, false); // very little value and some cpu overhead
+    enableAxis(yLeft, true);
 
     // 30s Power curve
     rightCurve = new QwtPlotCurve("SpinScan Left");
     rightCurve->setRenderHint(QwtPlotItem::RenderAntialiased); // too cpu intensive
     rightCurve->attach(this);
-    rightCurve->setYAxis(QwtAxis::YLeft);
+    rightCurve->setYAxis(QwtPlot::yLeft);
     leftCurve = new QwtPlotCurve("SpinScan Right");
     leftCurve->setRenderHint(QwtPlotItem::RenderAntialiased); // too cpu intensive
     leftCurve->attach(this);
-    leftCurve->setYAxis(QwtAxis::YLeft);
+    leftCurve->setYAxis(QwtPlot::yLeft);
 
     leftSpinScanData = new SpinScanData(spinData, true);
     rightSpinScanData = new SpinScanData(spinData, false);

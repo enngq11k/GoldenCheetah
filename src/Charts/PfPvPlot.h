@@ -24,6 +24,7 @@
 
 #include <qwt_plot.h>
 #include <qwt_point_3d.h>
+#include <qwt_compat.h>
 
 // forward references
 class RideItem;
@@ -62,7 +63,7 @@ class PfPvPlot : public QwtPlot
         // zone shader uses this
         double maxAEPF;
         double maxCPV;
-        QVector<double> contour_xvalues;
+        QwtArray<double> contour_xvalues;
 
         RideItem *rideItem;
 

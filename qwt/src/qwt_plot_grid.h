@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -12,6 +12,7 @@
 
 #include "qwt_global.h"
 #include "qwt_plot_item.h"
+#include "qwt_scale_div.h"
 
 class QPainter;
 class QPen;
@@ -19,72 +20,68 @@ class QwtScaleMap;
 class QwtScaleDiv;
 
 /*!
-   \brief A class which draws a coordinate grid
+  \brief A class which draws a coordinate grid
 
-   The QwtPlotGrid class can be used to draw a coordinate grid.
-   A coordinate grid consists of major and minor vertical
-   and horizontal grid lines. The locations of the grid lines
-   are determined by the X and Y scale divisions which can
-   be assigned with setXDiv() and setYDiv().
-   The draw() member draws the grid within a bounding
-   rectangle.
- */
+  The QwtPlotGrid class can be used to draw a coordinate grid.
+  A coordinate grid consists of major and minor vertical
+  and horizontal grid lines. The locations of the grid lines
+  are determined by the X and Y scale divisions which can
+  be assigned with setXDiv() and setYDiv().
+  The draw() member draws the grid within a bounding
+  rectangle.
+*/
 
-class QWT_EXPORT QwtPlotGrid : public QwtPlotItem
+class QWT_EXPORT QwtPlotGrid: public QwtPlotItem
 {
-  public:
+public:
     explicit QwtPlotGrid();
     virtual ~QwtPlotGrid();
 
-    virtual int rtti() const QWT_OVERRIDE;
+    virtual int rtti() const;
 
-    void enableX( bool );
+    void enableX( bool tf );
     bool xEnabled() const;
 
-    void enableY( bool );
+    void enableY( bool tf );
     bool yEnabled() const;
 
-    void enableXMin( bool );
+    void enableXMin( bool tf );
     bool xMinEnabled() const;
 
-    void enableYMin( bool );
+    void enableYMin( bool tf );
     bool yMinEnabled() const;
 
-    void setXDiv( const QwtScaleDiv& );
-    const QwtScaleDiv& xScaleDiv() const;
+    void setXDiv( const QwtScaleDiv &sx );
+    const QwtScaleDiv &xScaleDiv() const;
 
-    void setYDiv( const QwtScaleDiv& );
-    const QwtScaleDiv& yScaleDiv() const;
+    void setYDiv( const QwtScaleDiv &sy );
+    const QwtScaleDiv &yScaleDiv() const;
 
-    void setPen( const QColor&,
-        qreal width = 0.0, Qt::PenStyle = Qt::SolidLine );
+    void setPen( const QColor &, qreal width = 0.0, Qt::PenStyle = Qt::SolidLine );
+    void setPen( const QPen & );
 
-    void setPen( const QPen& );
-
-    void setMajorPen( const QColor&,
-        qreal width = 0.0, Qt::PenStyle = Qt::SolidLine );
-
-    void setMajorPen( const QPen& );
+    void setMajorPen( const QColor &, qreal width = 0.0, Qt::PenStyle = Qt::SolidLine );
+    void setMajorPen( const QPen & );
     const QPen& majorPen() const;
 
-    void setMinorPen( const QColor&, qreal width = 0.0, Qt::PenStyle = Qt::SolidLine );
-    void setMinorPen( const QPen& );
+    void setMinorPen( const QColor &, qreal width = 0.0, Qt::PenStyle = Qt::SolidLine );
+    void setMinorPen( const QPen &p );
     const QPen& minorPen() const;
 
-    virtual void draw( QPainter*,
-        const QwtScaleMap& xMap, const QwtScaleMap& yMap,
-        const QRectF& canvasRect ) const QWT_OVERRIDE;
+    virtual void draw( QPainter *p,
+        const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+        const QRectF &rect ) const;
 
-    virtual void updateScaleDiv(
-        const QwtScaleDiv& xScaleDiv, const QwtScaleDiv& yScaleDiv ) QWT_OVERRIDE;
+    virtual void updateScaleDiv( 
+        const QwtScaleDiv &xMap, const QwtScaleDiv &yMap );
 
-  private:
-    void drawLines( QPainter*, const QRectF&,
-        Qt::Orientation, const QwtScaleMap&,
-        const QList< double >& ) const;
+private:
+    void drawLines( QPainter *painter, const QRectF &,
+        Qt::Orientation orientation, const QwtScaleMap &,
+        const QList<double> & ) const;
 
     class PrivateData;
-    PrivateData* m_data;
+    PrivateData *d_data;
 };
 
 #endif

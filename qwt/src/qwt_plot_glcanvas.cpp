@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -9,105 +9,234 @@
 
 #include "qwt_plot_glcanvas.h"
 #include "qwt_plot.h"
+#include <qevent.h>
+#include <qpainter.h>
+#include <qdrawutil.h>
+#include <qstyle.h>
+#include <qstyleoption.h>
 #include "qwt_painter.h"
 
-#include <qcoreevent.h>
-#include <qpainter.h>
-#include <qpainterpath.h>
-#include <qglframebufferobject.h>
-
-namespace
+static QWidget *qwtBGWidget( QWidget *widget )
 {
-    class QwtPlotGLCanvasFormat : public QGLFormat
+    QWidget *w = widget;
+
+    for ( ; w->parentWidget() != NULL; w = w->parentWidget() )
     {
-      public:
-        QwtPlotGLCanvasFormat()
-            : QGLFormat( QGLFormat::defaultFormat() )
+        if ( w->autoFillBackground() || 
+            w->testAttribute( Qt::WA_StyledBackground ) )
         {
-            setSampleBuffers( true );
+            return w;
         }
-    };
+    }
+
+    return w;
+}
+
+static void qwtUpdateContentsRect( QwtPlotGLCanvas *canvas )
+{
+    const int fw = canvas->frameWidth();
+    canvas->setContentsMargins( fw, fw, fw, fw );
 }
 
 class QwtPlotGLCanvas::PrivateData
 {
-  public:
-    PrivateData()
-        : fboDirty( true )
-        , fbo( NULL )
+public:
+    PrivateData():
+        frameStyle( QFrame::Panel | QFrame::Sunken),
+        lineWidth( 2 ),
+        midLineWidth( 0 )
     {
     }
 
-    ~PrivateData()
-    {
-        delete fbo;
-    }
-
-    bool fboDirty;
-    QGLFramebufferObject* fbo;
+    int frameStyle;
+    int lineWidth;
+    int midLineWidth;
 };
 
-/*!
-   \brief Constructor
+/*! 
+  \brief Constructor
 
-   \param plot Parent plot widget
-   \sa QwtPlot::setCanvas()
- */
-QwtPlotGLCanvas::QwtPlotGLCanvas( QwtPlot* plot )
-    : QGLWidget( QwtPlotGLCanvasFormat(), plot )
-    , QwtPlotAbstractGLCanvas( this )
+  \param plot Parent plot widget
+  \sa QwtPlot::setCanvas()
+*/
+QwtPlotGLCanvas::QwtPlotGLCanvas( QwtPlot *plot ):
+    QGLWidget( plot )
 {
-    init();
-}
-/*!
-   \brief Constructor
+    d_data = new PrivateData;
 
-   \param format OpenGL rendering options
-   \param plot Parent plot widget
-   \sa QwtPlot::setCanvas()
- */
-QwtPlotGLCanvas::QwtPlotGLCanvas( const QGLFormat& format, QwtPlot* plot )
-    : QGLWidget( format, plot )
-    , QwtPlotAbstractGLCanvas( this )
-{
-    init();
+#ifndef QT_NO_CURSOR
+    setCursor( Qt::CrossCursor );
+#endif
+
+    setAutoFillBackground( true );
+    qwtUpdateContentsRect( this );
 }
 
 //! Destructor
 QwtPlotGLCanvas::~QwtPlotGLCanvas()
 {
-    delete m_data;
-}
-
-void QwtPlotGLCanvas::init()
-{
-    m_data = new PrivateData;
-
-#if 1
-    setAttribute( Qt::WA_OpaquePaintEvent, true );
-#endif
-    setLineWidth( 2 );
-    setFrameShadow( QFrame::Sunken );
-    setFrameShape( QFrame::Panel );
+    delete d_data;
 }
 
 /*!
-   Paint event
+  Set the frame style
 
-   \param event Paint event
-   \sa QwtPlot::drawCanvas()
+  \param style The bitwise OR between a shape and a shadow. 
+  
+  \sa frameStyle(), QFrame::setFrameStyle(), 
+      setFrameShadow(), setFrameShape()
  */
-void QwtPlotGLCanvas::paintEvent( QPaintEvent* event )
+void QwtPlotGLCanvas::setFrameStyle( int style )
 {
-    QGLWidget::paintEvent( event );
+    if ( style != d_data->frameStyle )
+    {
+        d_data->frameStyle = style;
+        qwtUpdateContentsRect( this );
+
+        update();
+    }
 }
 
 /*!
-   Qt event handler for QEvent::PolishRequest and QEvent::StyleChange
-   \param event Qt Event
-   \return See QGLWidget::event()
+  \return The bitwise OR between a frameShape() and a frameShadow()
+  \sa setFrameStyle(), QFrame::frameStyle()
  */
-bool QwtPlotGLCanvas::event( QEvent* event )
+int QwtPlotGLCanvas::frameStyle() const
+{
+    return d_data->frameStyle;
+}
+
+/*!
+  Set the frame shadow
+
+  \param shadow Frame shadow
+  \sa frameShadow(), setFrameShape(), QFrame::setFrameShadow()
+ */
+void QwtPlotGLCanvas::setFrameShadow( Shadow shadow )
+{
+    setFrameStyle(( d_data->frameStyle & QFrame::Shape_Mask ) | shadow );
+}
+
+/*!
+  \return Frame shadow
+  \sa setFrameShadow(), QFrame::setFrameShadow()
+ */
+QwtPlotGLCanvas::Shadow QwtPlotGLCanvas::frameShadow() const
+{
+    return (Shadow) ( d_data->frameStyle & QFrame::Shadow_Mask );
+}
+
+/*!
+  Set the frame shape
+
+  \param shape Frame shape
+  \sa frameShape(), setFrameShadow(), QFrame::frameShape()
+ */
+void QwtPlotGLCanvas::setFrameShape( Shape shape )
+{
+    setFrameStyle( ( d_data->frameStyle & QFrame::Shadow_Mask ) | shape );
+}
+
+/*!
+  \return Frame shape
+  \sa setFrameShape(), QFrame::frameShape()
+ */
+QwtPlotGLCanvas::Shape QwtPlotGLCanvas::frameShape() const
+{
+    return (Shape) ( d_data->frameStyle & QFrame::Shape_Mask );
+}
+
+/*!
+   Set the frame line width
+
+   The default line width is 2 pixels.
+
+   \param width Line width of the frame
+   \sa lineWidth(), setMidLineWidth()
+*/
+void QwtPlotGLCanvas::setLineWidth( int width )
+{
+    width = qMax( width, 0 );
+    if ( width != d_data->lineWidth )
+    {
+        d_data->lineWidth = qMax( width, 0 );
+        qwtUpdateContentsRect( this );
+        update();
+    }
+}
+
+/*!
+  \return Line width of the frame
+  \sa setLineWidth(), midLineWidth()
+ */
+int QwtPlotGLCanvas::lineWidth() const
+{
+    return d_data->lineWidth;
+}
+
+/*!
+   Set the frame mid line width
+
+   The default midline width is 0 pixels.
+
+   \param width Midline width of the frame
+   \sa midLineWidth(), setLineWidth()
+*/
+void QwtPlotGLCanvas::setMidLineWidth( int width )
+{
+    width = qMax( width, 0 );
+    if ( width != d_data->midLineWidth )
+    {
+        d_data->midLineWidth = width;
+        qwtUpdateContentsRect( this );
+        update();
+    }
+}
+
+/*!
+  \return Midline width of the frame
+  \sa setMidLineWidth(), lineWidth()
+ */ 
+int QwtPlotGLCanvas::midLineWidth() const
+{
+    return d_data->midLineWidth;
+}
+
+/*!
+  \return Frame width depending on the style, line width and midline width.
+ */
+int QwtPlotGLCanvas::frameWidth() const
+{
+    return ( frameStyle() != NoFrame ) ? d_data->lineWidth : 0;
+}
+
+/*!
+  Paint event
+
+  \param event Paint event
+  \sa QwtPlot::drawCanvas()
+*/
+void QwtPlotGLCanvas::paintEvent( QPaintEvent *event )
+{
+    Q_UNUSED( event );
+
+    QPainter painter( this );
+
+    drawBackground( &painter );
+    drawItems( &painter );
+
+    if ( !testAttribute( Qt::WA_StyledBackground ) )
+    {
+        if ( frameWidth() > 0 )
+            drawBorder( &painter );
+    }
+}
+/*!
+  Qt event handler for QEvent::PolishRequest and QEvent::StyleChange
+  \param event Qt Event
+  \return See QGLWidget::event()
+*/
+bool QwtPlotGLCanvas::event( QEvent *event )
 {
     const bool ok = QGLWidget::event( event );
 
@@ -125,116 +254,104 @@ bool QwtPlotGLCanvas::event( QEvent* event )
 }
 
 /*!
-   Invalidate the paint cache and repaint the canvas
-   \sa invalidatePaintCache()
- */
-void QwtPlotGLCanvas::replot()
-{
-    QwtPlotAbstractGLCanvas::replot();
-}
+  Draw the plot items
+  \param painter Painter
 
-//! Invalidate the internal backing store
-void QwtPlotGLCanvas::invalidateBackingStore()
+  \sa QwtPlot::drawCanvas()
+*/  
+void QwtPlotGLCanvas::drawItems( QPainter *painter )
 {
-    m_data->fboDirty = true;
-}
+    painter->save();
 
-void QwtPlotGLCanvas::clearBackingStore()
-{
-    delete m_data->fbo;
-    m_data->fbo = NULL;
+    painter->setClipRect( contentsRect(), Qt::IntersectClip );
+
+    QwtPlot *plot = qobject_cast< QwtPlot *>( parent() );
+    if ( plot )
+        plot->drawCanvas( painter );
+
+    painter->restore();
 }
 
 /*!
-   Calculate the painter path for a styled or rounded border
-
-   When the canvas has no styled background or rounded borders
-   the painter path is empty.
-
-   \param rect Bounding rectangle of the canvas
-   \return Painter path, that can be used for clipping
- */
-QPainterPath QwtPlotGLCanvas::borderPath( const QRect& rect ) const
+  Draw the background of the canvas
+  \param painter Painter
+*/ 
+void QwtPlotGLCanvas::drawBackground( QPainter *painter )
 {
-    return canvasBorderPath( rect );
-}
+    painter->save();
 
-//! No operation - reserved for some potential use in the future
-void QwtPlotGLCanvas::initializeGL()
-{
-}
+    QWidget *w = qwtBGWidget( this );
 
-//! Paint the plot
-void QwtPlotGLCanvas::paintGL()
-{
-    const bool hasFocusIndicator =
-        hasFocus() && focusIndicator() == CanvasFocusIndicator;
+    const QPoint off = mapTo( w, QPoint() );
+    painter->translate( -off );
 
-    QPainter painter;
+    const QRect fillRect = rect().translated( off );
 
-    if ( testPaintAttribute( QwtPlotGLCanvas::BackingStore ) )
+    if ( w->testAttribute( Qt::WA_StyledBackground ) )
     {
-        const qreal pixelRatio = QwtPainter::devicePixelRatio( this );
-        const QRect rect( 0, 0, width() * pixelRatio, height() * pixelRatio );
+        painter->setClipRect( fillRect );
 
-        if ( hasFocusIndicator )
-            painter.begin( this );
+        QStyleOption opt;
+        opt.initFrom( w );
+        w->style()->drawPrimitive( QStyle::PE_Widget, &opt, painter, w);
+    }
+    else 
+    {
+        painter->fillRect( fillRect,
+            w->palette().brush( w->backgroundRole() ) );
+    }
 
-        if ( m_data->fbo )
-        {
-            if ( m_data->fbo->size() != rect.size() )
-            {
-                delete m_data->fbo;
-                m_data->fbo = NULL;
-            }
-        }
+    painter->restore();
+}
 
-        if ( m_data->fbo == NULL )
-        {
-            QGLFramebufferObjectFormat format;
-            format.setSamples( 4 );
-            format.setAttachment(QGLFramebufferObject::CombinedDepthStencil);
+/*!
+  Draw the border of the canvas
+  \param painter Painter
+*/
+void QwtPlotGLCanvas::drawBorder( QPainter *painter )
+{
+    const int fw = frameWidth();
+    if ( fw <= 0 )
+        return;
 
-            m_data->fbo = new QGLFramebufferObject( rect.size(), format );
-            m_data->fboDirty = true;
-        }
-
-        if ( m_data->fboDirty )
-        {
-            QPainter fboPainter( m_data->fbo );
-            fboPainter.scale( pixelRatio, pixelRatio );
-            draw( &fboPainter );
-            fboPainter.end();
-
-            m_data->fboDirty = false;
-        }
-
-        /*
-            Why do we have this strange translation - but, anyway
-            QwtPlotGLCanvas in combination with scaling factor
-            is not very likely to happen as using QwtPlotOpenGLCanvas
-            usually makes more sense then.
-         */
-
-        QGLFramebufferObject::blitFramebuffer( NULL,
-            rect.translated( 0, height() - rect.height() ), m_data->fbo, rect );
+    if ( frameShadow() == QwtPlotGLCanvas::Plain )
+    {
+        qDrawPlainRect( painter, frameRect(), 
+            palette().shadow().color(), lineWidth() );
     }
     else
     {
-        painter.begin( this );
-        draw( &painter );
+        if ( frameShape() == QwtPlotGLCanvas::Box )
+        {
+            qDrawShadeRect( painter, frameRect(), palette(),
+                frameShadow() == Sunken, lineWidth(), midLineWidth() );
+        }
+        else
+        {
+            qDrawShadePanel( painter, frameRect(), palette(), 
+                frameShadow() == Sunken, lineWidth() );
+        }
     }
-
-    if ( hasFocusIndicator )
-        drawFocusIndicator( &painter );
 }
 
-//! No operation - reserved for some potential use in the future
-void QwtPlotGLCanvas::resizeGL( int, int )
+//! Calls repaint()
+void QwtPlotGLCanvas::replot()
 {
-    // nothing to do
+    repaint();
 }
 
-#if QWT_MOC_INCLUDE
-#include "moc_qwt_plot_glcanvas.cpp"
-#endif
+/*!
+   \return Empty path
+*/
+QPainterPath QwtPlotGLCanvas::borderPath( const QRect &rect ) const
+{
+    Q_UNUSED( rect );
+    return QPainterPath();
+}
+
+//! \return The rectangle where the frame is drawn in.
+QRect QwtPlotGLCanvas::frameRect() const
+{
+    const int fw = frameWidth();
+    return contentsRect().adjusted( -fw, -fw, fw, fw );
+}

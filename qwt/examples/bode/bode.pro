@@ -1,5 +1,5 @@
 ################################################################
-# Qwt Examples
+# Qwt Widget Library
 # Copyright (C) 1997   Josef Wilgen
 # Copyright (C) 2002   Uwe Rathmann
 #
@@ -12,12 +12,12 @@ include( $${PWD}/../examples.pri )
 TARGET       = bode
 
 HEADERS = \
-    MainWindow.h \
-    Plot.h \
-    ComplexNumber.h \ 
-    Pixmaps.h
+    mainwindow.h \
+    plot.h \
+    complexnumber.h \ 
+    pixmaps.h
 
 SOURCES = \
-    Plot.cpp \
-    MainWindow.cpp \
+    plot.cpp \
+    mainwindow.cpp \
     main.cpp

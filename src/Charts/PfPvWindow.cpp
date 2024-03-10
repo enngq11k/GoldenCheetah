@@ -27,8 +27,6 @@
 #include "HelpWhatsThis.h"
 #include <QtGui>
 
-#include "qwt_text.h"
-
 #define PI M_PI
 
 PfPvDoubleClickPicker::PfPvDoubleClickPicker( PfPvPlot *plot):

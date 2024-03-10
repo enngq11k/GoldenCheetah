@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -11,27 +11,37 @@
 #define QWT_SYSTEM_CLOCK_H
 
 #include "qwt_global.h"
-#include <qelapsedtimer.h>
 
 /*!
-   \brief QwtSystemClock provides high resolution clock time functions.
+  \brief QwtSystemClock provides high resolution clock time functions.
 
-   Precision and time intervals are multiples of milliseconds (ms).
+  Sometimes the resolution offered by QTime ( millisecond ) is not accurate
+  enough for implementing time measurements ( f.e. sampling ).
+  QwtSystemClock offers a subset of the QTime functionality using higher
+  resolution timers ( if possible ).
 
-   ( QwtSystemClock is deprecated as QElapsedTimer offers the same precision )
- */
+  Precision and time intervals are multiples of milliseconds (ms).
+
+  \note The implementation uses high-resolution performance counter on Windows,
+        mach_absolute_time() on the Mac or POSIX timers on other systems. 
+        If none is available it falls back on QTimer.
+*/
 
 class QWT_EXPORT QwtSystemClock
 {
-  public:
+public:
+    QwtSystemClock();
+    virtual ~QwtSystemClock();
+
     bool isNull() const;
 
     void start();
     double restart();
     double elapsed() const;
 
-  private:
-    QElapsedTimer m_timer;
+private:
+    class PrivateData;
+    PrivateData *d_data;
 };
 
 #endif

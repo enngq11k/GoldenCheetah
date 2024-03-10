@@ -154,7 +154,7 @@ QwtScaleDiv LogTimeScaleEngine::divideScale(double x1, double x2,
     QwtScaleDiv scaleDiv;
     if ( stepSize != 0.0 )
     {
-        QList<double> ticks[QwtScaleDiv::NTickTypes];
+        QwtValueList ticks[QwtScaleDiv::NTickTypes];
         buildTicks(interval, stepSize, maxMinSteps, ticks);
 
         scaleDiv = QwtScaleDiv(interval, ticks);
@@ -168,7 +168,7 @@ QwtScaleDiv LogTimeScaleEngine::divideScale(double x1, double x2,
 
 void LogTimeScaleEngine::buildTicks(
     const QwtDoubleInterval& interval, double stepSize, int maxMinSteps,
-    QList<double> ticks[QwtScaleDiv::NTickTypes]) const
+    QwtValueList ticks[QwtScaleDiv::NTickTypes]) const
 {
     const QwtDoubleInterval boundingInterval =
         align(interval, stepSize);
@@ -210,12 +210,12 @@ tick_info_t tick_info[] = {
     {      -1.0,    NULL }
 };
 
-QList<double> LogTimeScaleEngine::buildMajorTicks(
+QwtValueList LogTimeScaleEngine::buildMajorTicks(
     const QwtDoubleInterval &interval, double stepSize) const
 {
     (void) interval;
     (void) stepSize;
-    QList<double> ticks;
+    QwtValueList ticks;
     tick_info_t *walker = tick_info;
     while (walker->label) {
         ticks += walker->x;
@@ -224,14 +224,14 @@ QList<double> LogTimeScaleEngine::buildMajorTicks(
     return ticks;
 }
 
-QList<double> LogTimeScaleEngine::buildMinorTicks(
-    const QList<double> &majorTicks,
+QwtValueList LogTimeScaleEngine::buildMinorTicks(
+    const QwtValueList &majorTicks,
     int maxMinSteps, double stepSize) const
 {
     (void) majorTicks;
     (void) maxMinSteps;
     (void) stepSize;
-    QList<double> minorTicks;
+    QwtValueList minorTicks;
     return minorTicks;
 }
 

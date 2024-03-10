@@ -1,19 +1,14 @@
-/*****************************************************************************
- * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
- * This file may be used under the terms of the 3-clause BSD License
- *****************************************************************************/
+#include <qapplication.h>
+#include "mainwindow.h"
 
-#include "MainWindow.h"
-#include <QApplication>
-
-int main( int argc, char* argv[] )
+int main ( int argc, char **argv )
 {
-    QApplication app( argc, argv );
-    app.setStyle( "Windows" );
+    QApplication a( argc, argv );
+    a.setStyle( "Windows" );
 
-    MainWindow window;
-    window.resize( 700, 500 );
-    window.show();
+    MainWindow w;
+    w.resize( 700, 500 );
+    w.show();
 
-    return app.exec();
+    return a.exec();
 }

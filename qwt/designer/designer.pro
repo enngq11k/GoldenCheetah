@@ -8,7 +8,6 @@
 ################################################################
 
 QWT_ROOT = $${PWD}/..
-QWT_OUT_ROOT = $${OUT_PWD}/..
 
 include ( $${QWT_ROOT}/qwtconfig.pri )
 include ( $${QWT_ROOT}/qwtbuild.pri )
@@ -27,24 +26,10 @@ CONFIG( debug_and_release ) {
     CONFIG += release
 }
 
-contains(QWT_CONFIG, QwtDesigner ) {
-    
-    greaterThan(QT_MAJOR_VERSION, 4) {
-
-        !qtHaveModule(designer) QWT_CONFIG -= QwtDesigner
-    } else {
-
-        !exists( $(QTDIR)/include/QtDesigner ) QWT_CONFIG -= QwtDesigner
-    }
-
-    !contains(QWT_CONFIG, QwtDesigner ) {
-        warning("QwtDesigner is enabled in qwtconfig.pri, but Qt has not been built with designer support")
-    }
-}
-
 contains(QWT_CONFIG, QwtDesigner) {
 
     CONFIG    += qt plugin 
+    CONFIG    += warn_on
 
     greaterThan(QT_MAJOR_VERSION, 4) {
 
@@ -67,6 +52,7 @@ contains(QWT_CONFIG, QwtDesigner) {
     contains(QWT_CONFIG, QwtDll) {
 
         contains(QWT_CONFIG, QwtDesignerSelfContained) {
+
             QWT_CONFIG += include_src
         }
 
@@ -99,11 +85,23 @@ contains(QWT_CONFIG, QwtDesigner) {
         # into the plugin. Not supported on Windows !
 
         QMAKE_RPATHDIR *= $${QWT_INSTALL_LIBS}
-        qwtAddLibrary($${QWT_OUT_ROOT}/lib, qwt)
+
+        contains(QWT_CONFIG, QwtFramework) {
+
+            LIBS      += -F$${QWT_ROOT}/lib 
+        }
+        else {
+
+            LIBS      += -L$${QWT_ROOT}/lib
+        }
+
+        qwtAddLibrary(qwt)
 
         contains(QWT_CONFIG, QwtDll) {
 
-            DEFINES += QT_DLL QWT_DLL
+            win32 {
+                DEFINES += QT_DLL QWT_DLL
+            }
         }
     }
 
@@ -111,15 +109,19 @@ contains(QWT_CONFIG, QwtDesigner) {
         DEFINES += NO_QWT_PLOT
     }
 
-    !contains(QWT_CONFIG, QwtPolar) {
-        DEFINES += NO_QWT_POLAR
-    }
-
     !contains(QWT_CONFIG, QwtWidgets) {
         DEFINES += NO_QWT_WIDGETS
     }
 
+    HEADERS += qwt_designer_plugin.h
     SOURCES += qwt_designer_plugin.cpp
+
+    contains(QWT_CONFIG, QwtPlot) {
+
+        HEADERS += qwt_designer_plotdialog.h
+        SOURCES += qwt_designer_plotdialog.cpp
+    }
+
     RESOURCES += qwt_designer_plugin.qrc
 
     target.path = $${QWT_INSTALL_PLUGINS}

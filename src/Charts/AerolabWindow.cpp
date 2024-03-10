@@ -284,8 +284,8 @@ AerolabWindow::AerolabWindow(Context *context) :
 
   // tooltip on hover over point
   //************************************
-    aerolab->tooltip = new LTMToolTip( QwtAxis::XBottom,
-                                       QwtAxis::YLeft,
+    aerolab->tooltip = new LTMToolTip( QwtPlot::xBottom,
+                                       QwtPlot::yLeft,
                                        QwtPicker::VLineRubberBand,
                                        QwtPicker::AlwaysOn,
                                        aerolab->canvas(),
@@ -642,7 +642,7 @@ AerolabWindow::doEstCdACrr()
 
 void
 AerolabWindow::zoomInterval(IntervalItem *which) {
-  QRectF rect;
+  QwtDoubleRect rect;
 
   if (!aerolab->byDistance()) {
     rect.setLeft(which->start/60);
@@ -669,13 +669,13 @@ void AerolabWindow::intervalSelected()
 
 double AerolabWindow::getCanvasTop() const
 {
-    const QRectF &canvasRect = allZoomer->zoomRect();
+    const QwtDoubleRect &canvasRect = allZoomer->zoomRect();
     return canvasRect.top();
 }
 
 double AerolabWindow::getCanvasBottom() const
 {
-    const QRectF &canvasRect = allZoomer->zoomRect();
+    const QwtDoubleRect &canvasRect = allZoomer->zoomRect();
     return canvasRect.bottom();
 }
 

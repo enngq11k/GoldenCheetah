@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -8,15 +8,14 @@
  *****************************************************************************/
 
 #include "qwt_abstract_legend.h"
-#include "qwt_legend_data.h"
 
 /*!
-   Constructor
+  Constructor
 
-   \param parent Parent widget
- */
-QwtAbstractLegend::QwtAbstractLegend( QWidget* parent )
-    : QFrame( parent )
+  \param parent Parent widget
+*/
+QwtAbstractLegend::QwtAbstractLegend( QWidget *parent ):
+    QFrame( parent )
 {
 }
 
@@ -31,13 +30,9 @@ QwtAbstractLegend::~QwtAbstractLegend()
 
    \param orientation Orientation
    \return Extent of the corresponding scroll element
- */
+*/
 int QwtAbstractLegend::scrollExtent( Qt::Orientation orientation ) const
 {
     Q_UNUSED( orientation );
     return 0;
 }
-
-#if QWT_MOC_INCLUDE
-#include "moc_qwt_abstract_legend.cpp"
-#endif

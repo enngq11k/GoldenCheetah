@@ -1,5 +1,5 @@
 ################################################################
-# Qwt Examples
+# Qwt Widget Library
 # Copyright (C) 1997   Josef Wilgen
 # Copyright (C) 2002   Uwe Rathmann
 #
@@ -12,10 +12,12 @@ include( $${PWD}/../examples.pri )
 TARGET       = radio
 
 HEADERS = \
-     AmplifierBox.h \
-     TunerBox.h
+     mainwindow.h \
+     ampfrm.h \
+     tunerfrm.h
 
 SOURCES = \
-    AmplifierBox.cpp \ 
-    TunerBox.cpp \
-    main.cpp 
+    mainwindow.cpp \ 
+    ampfrm.cpp \ 
+    tunerfrm.cpp \
+    radio.cpp 

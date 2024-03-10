@@ -31,7 +31,6 @@
 #include <qwt_plot_intervalcurve.h>
 #include <qwt_scale_div.h>
 #include <qwt_scale_widget.h>
-#include <qwt_scale_map.h>
 
 class AllPlotIntervalData : public QwtArraySeriesData<QwtIntervalSample>
 {
@@ -94,16 +93,16 @@ AllPlotInterval::AllPlotInterval(QWidget *parent, Context *context):
     // tick draw
     //TimeScaleDraw *tsd = new TimeScaleDraw(&this->bydist) ;
     //tsd->setTickLength(QwtScaleDiv::MajorTick, 3);
-    //setAxisScaleDraw(QwtAxis::XBottom, tsd);
+    //setAxisScaleDraw(QwtPlot::xBottom, tsd);
     //pal.setColor(QPalette::WindowText, GColor(CPLOTMARKER));
     //pal.setColor(QPalette::Text, GColor(CPLOTMARKER));
-    //axisWidget(QwtAxis::XBottom)->setPalette(pal);
+    //axisWidget(QwtPlot::xBottom)->setPalette(pal);
 
-    setAxisVisible(QwtAxis::XBottom, false);
-    setAxisVisible(QwtAxis::XBottom, false);
-    setAxisVisible(QwtAxis::YLeft, false);
+    enableAxis(xBottom, false);
+    setAxisVisible(xBottom, false);
+    setAxisVisible(yLeft, false);
 
-    tooltip = new LTMToolTip(QwtAxis::XBottom, QwtAxis::YLeft,
+    tooltip = new LTMToolTip(QwtPlot::xBottom, QwtAxis::yLeft,
                                    QwtPicker::NoRubberBand,
                                    QwtPicker::AlwaysOn,
                                    canvas(),
@@ -240,7 +239,7 @@ AllPlotInterval::placeIntervals()
     }
 
     setFixedHeight((1+intervalLigns.count())*(10*dpiYFactor));
-    setAxisScale(QwtAxis::YLeft, 0, 3000*intervalLigns.count());
+    setAxisScale(yLeft, 0, 3000*intervalLigns.count());
 }
 
 void
@@ -270,7 +269,7 @@ AllPlotInterval::refreshIntervalCurve()
 
         foreach(IntervalItem *interval, intervalsLign) {
             QwtPlotIntervalCurve *intervalCurve = new QwtPlotIntervalCurve();
-            intervalCurve->setYAxis(QwtAxis::YLeft);
+            intervalCurve->setYAxis(QwtAxis::yLeft);
 
             setColorForIntervalCurve(intervalCurve, interval, false);
 

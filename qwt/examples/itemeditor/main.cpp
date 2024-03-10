@@ -1,54 +1,48 @@
-/*****************************************************************************
- * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
- * This file may be used under the terms of the 3-clause BSD License
- *****************************************************************************/
+#include "plot.h"
+#include <qapplication.h>
+#include <qmainwindow.h>
+#include <qtoolbar.h>
+#include <qtoolbutton.h>
+#include <qcombobox.h>
 
-#include "Plot.h"
-
-#include <QApplication>
-#include <QMainWindow>
-#include <QToolBar>
-#include <QToolButton>
-#include <QComboBox>
-
-namespace
+class MainWindow: public QMainWindow
 {
-    class MainWindow : public QMainWindow
-    {
-      public:
-        MainWindow( QWidget* parent = nullptr )
-            : QMainWindow( parent )
-        {
-            Plot* plot = new Plot( this );
-            setCentralWidget( plot );
+public:
+    MainWindow( QWidget * = NULL );
+};
 
-            QToolBar* toolBar = new QToolBar( this );
+MainWindow::MainWindow( QWidget *parent ):
+    QMainWindow( parent )
+{
+    Plot *plot = new Plot( this );
+    setCentralWidget( plot );
 
-            QComboBox* modeBox = new QComboBox( toolBar );
-            modeBox->addItem( "No Mask" );
-            modeBox->addItem( "Mask" );
-            modeBox->addItem( "Alpha Mask" );
-            modeBox->addItem( "Alpha Mask/Redraw" );
-            modeBox->addItem( "Alpha Mask/Copy Mask" );
-            modeBox->setCurrentIndex( 1 );
-            modeBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    QToolBar *toolBar = new QToolBar( this );
 
-            connect( modeBox, SIGNAL(currentIndexChanged(int)),
-                plot, SLOT(setMode(int)) );
+    QComboBox *modeBox = new QComboBox( toolBar );
+    modeBox->addItem( "No Mask" );
+    modeBox->addItem( "Mask" );
+    modeBox->addItem( "Alpha Mask" );
+    modeBox->addItem( "Alpha Mask/Redraw" );
+    modeBox->addItem( "Alpha Mask/Copy Mask" );
+    modeBox->setCurrentIndex( 1 );
+    modeBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-            QToolButton* btnExport = new QToolButton( toolBar );
-            btnExport->setText( "Export" );
-            btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-            connect( btnExport, SIGNAL(clicked()), plot, SLOT(exportPlot()) );
+    connect( modeBox, SIGNAL( currentIndexChanged( int ) ),
+             plot, SLOT( setMode( int ) ) );
 
-            toolBar->addWidget( modeBox );
-            toolBar->addWidget( btnExport );
-            addToolBar( toolBar );
-        }
-    };
+    QToolButton *btnExport = new QToolButton( toolBar );
+    btnExport->setText( "Export" );
+    btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+    connect( btnExport, SIGNAL( clicked() ), plot, SLOT( exportPlot() ) );
+
+    toolBar->addWidget( modeBox );
+    toolBar->addWidget( btnExport );
+    addToolBar( toolBar );
+
 }
 
-int main( int argc, char* argv[] )
+int main( int argc, char **argv )
 {
     QApplication app( argc, argv );
 

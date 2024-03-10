@@ -1,70 +1,64 @@
-/*****************************************************************************
- * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
- * This file may be used under the terms of the 3-clause BSD License
- *****************************************************************************/
+#include <qapplication.h>
+#include <qmainwindow.h>
+#include <qtoolbar.h>
+#include <qtoolbutton.h>
+#include <qcombobox.h>
+#include "barchart.h"
 
-#include "BarChart.h"
-
-#include <QApplication>
-#include <QMainWindow>
-#include <QToolBar>
-#include <QToolButton>
-#include <QComboBox>
-
-namespace
+class MainWindow: public QMainWindow
 {
-    class MainWindow : public QMainWindow
-    {
-      public:
-        MainWindow( QWidget* = NULL );
-    };
-}
+public:
+    MainWindow( QWidget * = NULL );
 
-MainWindow::MainWindow( QWidget* parent )
-    : QMainWindow( parent )
+private:
+    BarChart *d_chart;
+};
+
+MainWindow::MainWindow( QWidget *parent ):
+    QMainWindow( parent )
 {
-    BarChart* chart = new BarChart();
-    setCentralWidget( chart );
+    d_chart = new BarChart( this );
+    setCentralWidget( d_chart );
 
-    QToolBar* toolBar = new QToolBar();
+    QToolBar *toolBar = new QToolBar( this );
 
-    QComboBox* typeBox = new QComboBox( toolBar );
+    QComboBox *typeBox = new QComboBox( toolBar );
     typeBox->addItem( "Grouped" );
     typeBox->addItem( "Stacked" );
     typeBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-    QComboBox* orientationBox = new QComboBox( toolBar );
+    QComboBox *orientationBox = new QComboBox( toolBar );
     orientationBox->addItem( "Vertical" );
     orientationBox->addItem( "Horizontal" );
     orientationBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-    QToolButton* btnExport = new QToolButton( toolBar );
+    QToolButton *btnExport = new QToolButton( toolBar );
     btnExport->setText( "Export" );
     btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-    connect( btnExport, SIGNAL(clicked()), chart, SLOT(exportChart()) );
+    connect( btnExport, SIGNAL( clicked() ), d_chart, SLOT( exportChart() ) );
 
     toolBar->addWidget( typeBox );
     toolBar->addWidget( orientationBox );
     toolBar->addWidget( btnExport );
     addToolBar( toolBar );
 
-    chart->setMode( typeBox->currentIndex() );
-    connect( typeBox, SIGNAL(currentIndexChanged(int)),
-        chart, SLOT(setMode(int)) );
+    d_chart->setMode( typeBox->currentIndex() );
+    connect( typeBox, SIGNAL( currentIndexChanged( int ) ),
+             d_chart, SLOT( setMode( int ) ) );
 
-    chart->setOrientation( orientationBox->currentIndex() );
-    connect( orientationBox, SIGNAL(currentIndexChanged(int)),
-        chart, SLOT(setOrientation(int)) );
+    d_chart->setOrientation( orientationBox->currentIndex() );
+    connect( orientationBox, SIGNAL( currentIndexChanged( int ) ),
+             d_chart, SLOT( setOrientation( int ) ) );
 }
 
-int main( int argc, char* argv[] )
+int main( int argc, char **argv )
 {
-    QApplication app( argc, argv );
+    QApplication a( argc, argv );
 
-    MainWindow window;
+    MainWindow mainWindow;
 
-    window.resize( 600, 400 );
-    window.show();
+    mainWindow.resize( 600, 400 );
+    mainWindow.show();
 
-    return app.exec();
+    return a.exec();
 }

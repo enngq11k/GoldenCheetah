@@ -1,20 +1,15 @@
-/*****************************************************************************
- * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
- * This file may be used under the terms of the 3-clause BSD License
- *****************************************************************************/
+#include <qapplication.h>
+#include "mainwindow.h"
 
-#include "MainWindow.h"
-#include <QApplication>
-
-int main( int argc, char* argv[] )
+int main( int argc, char **argv )
 {
-    QApplication app( argc, argv );
+    QApplication a( argc, argv );
 
-    MainWindow window;
+    MainWindow mainWindow;
 
-    window.resize( 800, 600 );
-    window.show();
+    mainWindow.resize( 800, 600 );
+    mainWindow.show();
 
-    return app.exec();
+    return a.exec();
 }
 

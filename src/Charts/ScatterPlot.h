@@ -38,7 +38,6 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_picker.h>
 #include <qwt_symbol.h>
-#include <qwt_text.h>
 
 #define MODEL_NONE          0
 #define MODEL_POWER         1

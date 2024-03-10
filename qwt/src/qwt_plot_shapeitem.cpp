@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -9,25 +9,19 @@
 
 #include "qwt_plot_shapeitem.h"
 #include "qwt_scale_map.h"
-#include "qwt_text.h"
-#include "qwt_graphic.h"
 #include "qwt_painter.h"
-#include "qwt_weeding_curve_fitter.h"
+#include "qwt_curve_fitter.h"
 #include "qwt_clipper.h"
-#include "qwt_math.h"
 
-#include <qpainter.h>
-#include <qpainterpath.h>
-
-static QPainterPath qwtTransformPath( const QwtScaleMap& xMap,
-    const QwtScaleMap& yMap, const QPainterPath& path, bool doAlign )
+static QPainterPath qwtTransformPath( const QwtScaleMap &xMap,
+        const QwtScaleMap &yMap, const QPainterPath &path, bool doAlign )
 {
     QPainterPath shape;
     shape.setFillRule( path.fillRule() );
 
     for ( int i = 0; i < path.elementCount(); i++ )
     {
-        const QPainterPath::Element element = path.elementAt( i );
+        const QPainterPath::Element &element = path.elementAt( i );
 
         double x = xMap.transform( element.x );
         double y = yMap.transform( element.y );
@@ -58,11 +52,11 @@ static QPainterPath qwtTransformPath( const QwtScaleMap& xMap,
             }
             case QPainterPath::CurveToElement:
             {
-                const QPainterPath::Element element1 = path.elementAt( ++i );
+                const QPainterPath::Element& element1 = path.elementAt( ++i );
                 const double x1 = xMap.transform( element1.x );
                 const double y1 = yMap.transform( element1.y );
 
-                const QPainterPath::Element element2 = path.elementAt( ++i );
+                const QPainterPath::Element& element2 = path.elementAt( ++i );
                 const double x2 = xMap.transform( element2.x );
                 const double y2 = yMap.transform( element2.y );
 
@@ -82,10 +76,10 @@ static QPainterPath qwtTransformPath( const QwtScaleMap& xMap,
 
 class QwtPlotShapeItem::PrivateData
 {
-  public:
-    PrivateData()
-        : legendMode( QwtPlotShapeItem::LegendColor )
-        , renderTolerance( 0.0 )
+public:
+    PrivateData():
+        legendMode( QwtPlotShapeItem::LegendColor ),
+        renderTolerance( 0.0 )
     {
     }
 
@@ -108,9 +102,9 @@ class QwtPlotShapeItem::PrivateData
    - QwtPlotItem::Legend:    false
 
    \param title Title
- */
-QwtPlotShapeItem::QwtPlotShapeItem( const QString& title )
-    : QwtPlotItem( QwtText( title ) )
+*/
+QwtPlotShapeItem::QwtPlotShapeItem( const QString& title ):
+    QwtPlotItem( QwtText( title ) )
 {
     init();
 }
@@ -123,9 +117,9 @@ QwtPlotShapeItem::QwtPlotShapeItem( const QString& title )
    - QwtPlotItem::Legend:    false
 
    \param title Title
- */
-QwtPlotShapeItem::QwtPlotShapeItem( const QwtText& title )
-    : QwtPlotItem( title )
+*/
+QwtPlotShapeItem::QwtPlotShapeItem( const QwtText& title ):
+    QwtPlotItem( title )
 {
     init();
 }
@@ -133,13 +127,13 @@ QwtPlotShapeItem::QwtPlotShapeItem( const QwtText& title )
 //! Destructor
 QwtPlotShapeItem::~QwtPlotShapeItem()
 {
-    delete m_data;
+    delete d_data;
 }
 
 void QwtPlotShapeItem::init()
 {
-    m_data = new PrivateData();
-    m_data->boundingRect = QwtPlotItem::boundingRect();
+    d_data = new PrivateData();
+    d_data->boundingRect = QwtPlotItem::boundingRect();
 
     setItemAttribute( QwtPlotItem::AutoScale, true );
     setItemAttribute( QwtPlotItem::Legend, false );
@@ -154,66 +148,66 @@ int QwtPlotShapeItem::rtti() const
 }
 
 /*!
-   Specify an attribute how to draw the shape
+  Specify an attribute how to draw the shape
 
-   \param attribute Paint attribute
-   \param on On/Off
-   \sa testPaintAttribute()
- */
+  \param attribute Paint attribute
+  \param on On/Off
+  \sa testPaintAttribute()
+*/
 void QwtPlotShapeItem::setPaintAttribute( PaintAttribute attribute, bool on )
 {
     if ( on )
-        m_data->paintAttributes |= attribute;
+        d_data->paintAttributes |= attribute;
     else
-        m_data->paintAttributes &= ~attribute;
+        d_data->paintAttributes &= ~attribute;
 }
 
 /*!
-   \return True, when attribute is enabled
-   \sa setPaintAttribute()
- */
+  \return True, when attribute is enabled
+  \sa setPaintAttribute()
+*/
 bool QwtPlotShapeItem::testPaintAttribute( PaintAttribute attribute ) const
 {
-    return ( m_data->paintAttributes & attribute );
+    return ( d_data->paintAttributes & attribute );
 }
 
 /*!
-   Set the mode how to represent the item on the legend
+  Set the mode how to represent the item on the legend
 
-   \param mode Mode
-   \sa legendMode()
+  \param mode Mode
+  \sa legendMode()
  */
 void QwtPlotShapeItem::setLegendMode( LegendMode mode )
 {
-    if ( mode != m_data->legendMode )
+    if ( mode != d_data->legendMode )
     {
-        m_data->legendMode = mode;
+        d_data->legendMode = mode;
         legendChanged();
     }
 }
 
 /*!
-   \return Mode how to represent the item on the legend
-   \sa legendMode()
+  \return Mode how to represent the item on the legend
+  \sa legendMode()
  */
 QwtPlotShapeItem::LegendMode QwtPlotShapeItem::legendMode() const
 {
-    return m_data->legendMode;
+    return d_data->legendMode;
 }
 
 //! Bounding rectangle of the shape
 QRectF QwtPlotShapeItem::boundingRect() const
 {
-    return m_data->boundingRect;
+    return d_data->boundingRect;
 }
 
 /*!
-   \brief Set a path built from a rectangle
+  \brief Set a path built from a rectangle
 
-   \param rect Rectangle
-   \sa setShape(), setPolygon(), shape()
+  \param rect Rectangle
+  \sa setShape(), setPolygon(), shape()
  */
-void QwtPlotShapeItem::setRect( const QRectF& rect )
+void QwtPlotShapeItem::setRect( const QRectF &rect ) 
 {
     QPainterPath path;
     path.addRect( rect );
@@ -222,12 +216,12 @@ void QwtPlotShapeItem::setRect( const QRectF& rect )
 }
 
 /*!
-   \brief Set a path built from a polygon
+  \brief Set a path built from a polygon
 
-   \param polygon Polygon
-   \sa setShape(), setRect(), shape()
+  \param polygon Polygon
+  \sa setShape(), setRect(), shape()
  */
-void QwtPlotShapeItem::setPolygon( const QPolygonF& polygon )
+void QwtPlotShapeItem::setPolygon( const QPolygonF &polygon )
 {
     QPainterPath shape;
     shape.addPolygon( polygon );
@@ -236,23 +230,23 @@ void QwtPlotShapeItem::setPolygon( const QPolygonF& polygon )
 }
 
 /*!
-   \brief Set the shape to be displayed
+  \brief Set the shape to be displayed
 
-   \param shape Shape
-   \sa setShape(), shape()
+  \param shape Shape
+  \sa setShape(), shape()
  */
-void QwtPlotShapeItem::setShape( const QPainterPath& shape )
+void QwtPlotShapeItem::setShape( const QPainterPath &shape )
 {
-    if ( shape != m_data->shape )
+    if ( shape != d_data->shape )
     {
-        m_data->shape = shape;
+        d_data->shape = shape;
         if ( shape.isEmpty() )
         {
-            m_data->boundingRect = QwtPlotItem::boundingRect();
+            d_data->boundingRect = QwtPlotItem::boundingRect();
         }
         else
         {
-            m_data->boundingRect = shape.boundingRect();
+            d_data->boundingRect = shape.boundingRect();
         }
 
         itemChanged();
@@ -260,45 +254,45 @@ void QwtPlotShapeItem::setShape( const QPainterPath& shape )
 }
 
 /*!
-   \return Shape to be displayed
-   \sa setShape()
+  \return Shape to be displayed
+  \sa setShape()
  */
 QPainterPath QwtPlotShapeItem::shape() const
 {
-    return m_data->shape;
+    return d_data->shape;
 }
 
-/*!
-   Build and assign a pen
-
-   In Qt5 the default pen width is 1.0 ( 0.0 in Qt4 ) what makes it
-   non cosmetic ( see QPen::isCosmetic() ). This method has been introduced
-   to hide this incompatibility.
-
-   \param color Pen color
-   \param width Pen width
-   \param style Pen style
-
-   \sa pen(), brush()
- */
-void QwtPlotShapeItem::setPen( const QColor& color, qreal width, Qt::PenStyle style )
-{
+/*! 
+  Build and assign a pen
+    
+  In Qt5 the default pen width is 1.0 ( 0.0 in Qt4 ) what makes it
+  non cosmetic ( see QPen::isCosmetic() ). This method has been introduced
+  to hide this incompatibility.
+    
+  \param color Pen color
+  \param width Pen width
+  \param style Pen style
+    
+  \sa pen(), brush()
+ */ 
+void QwtPlotShapeItem::setPen( const QColor &color, qreal width, Qt::PenStyle style )
+{   
     setPen( QPen( color, width, style ) );
 }
 
 /*!
-   \brief Assign a pen
+  \brief Assign a pen
 
-   The pen is used to draw the outline of the shape
+  The pen is used to draw the outline of the shape
 
-   \param pen Pen
-   \sa pen(), brush()
- */
-void QwtPlotShapeItem::setPen( const QPen& pen )
+  \param pen Pen
+  \sa pen(), brush()
+*/
+void QwtPlotShapeItem::setPen( const QPen &pen )
 {
-    if ( pen != m_data->pen )
+    if ( pen != d_data->pen )
     {
-        m_data->pen = pen;
+        d_data->pen = pen;
         itemChanged();
     }
 }
@@ -306,162 +300,158 @@ void QwtPlotShapeItem::setPen( const QPen& pen )
 /*!
     \return Pen used to draw the outline of the shape
     \sa setPen(), brush()
- */
+*/
 QPen QwtPlotShapeItem::pen() const
 {
-    return m_data->pen;
+    return d_data->pen;
 }
 
 /*!
-   Assign a brush.
+  Assign a brush.
 
-   The brush is used to fill the path
+  The brush is used to fill the path
 
-   \param brush Brush
-   \sa brush(), pen()
- */
-void QwtPlotShapeItem::setBrush( const QBrush& brush )
+  \param brush Brush
+  \sa brush(), pen()
+*/
+void QwtPlotShapeItem::setBrush( const QBrush &brush )
 {
-    if ( brush != m_data->brush )
+    if ( brush != d_data->brush )
     {
-        m_data->brush = brush;
+        d_data->brush = brush;
         itemChanged();
     }
 }
 
 /*!
-   \return Brush used to fill the shape
-   \sa setBrush(), pen()
- */
+  \return Brush used to fill the shape
+  \sa setBrush(), pen()
+*/
 QBrush QwtPlotShapeItem::brush() const
 {
-    return m_data->brush;
+    return d_data->brush;
 }
 
 /*!
-   \brief Set the tolerance for the weeding optimization
+  \brief Set the tolerance for the weeding optimization
 
-   After translating the shape into target device coordinate
-   ( usually widget geometries ) the painter path can be simplified
-   by a point weeding algorithm ( Douglas-Peucker ).
+  After translating the shape into target device coordinate 
+  ( usually widget geometries ) the painter path can be simplified
+  by a point weeding algorithm ( Douglas-Peucker ).
 
-   For shapes built from curves and ellipses weeding might
-   have the opposite effect because they have to be expanded
-   to polygons.
+  For shapes built from curves and ellipses weeding might
+  have the opposite effect because they have to be expanded
+  to polygons.
 
-   \param tolerance Accepted error when reducing the number of points
+  \param tolerance Accepted error when reducing the number of points
                    A value <= 0.0 disables weeding.
 
-   \sa renderTolerance(), QwtWeedingCurveFitter
+  \sa renderTolerance(), QwtWeedingCurveFitter
  */
 void QwtPlotShapeItem::setRenderTolerance( double tolerance )
 {
-    tolerance = qwtMaxF( tolerance, 0.0 );
+    tolerance = qMax( tolerance, 0.0 );
 
-    if ( tolerance != m_data->renderTolerance )
+    if ( tolerance != d_data->renderTolerance )
     {
-        m_data->renderTolerance = tolerance;
+        d_data->renderTolerance = tolerance;
         itemChanged();
     }
 }
 
 /*!
-   \return Tolerance for the weeding optimization
-   \sa setRenderTolerance()
+  \return Tolerance for the weeding optimization
+  \sa setRenderTolerance()
  */
 double QwtPlotShapeItem::renderTolerance() const
 {
-    return m_data->renderTolerance;
+    return d_data->renderTolerance;
 }
 
 /*!
-   Draw the shape item
+  Draw the shape item
 
-   \param painter Painter
-   \param xMap X-Scale Map
-   \param yMap Y-Scale Map
-   \param canvasRect Contents rect of the plot canvas
- */
-void QwtPlotShapeItem::draw( QPainter* painter,
-    const QwtScaleMap& xMap, const QwtScaleMap& yMap,
-    const QRectF& canvasRect ) const
+  \param painter Painter
+  \param xMap X-Scale Map
+  \param yMap Y-Scale Map
+  \param canvasRect Contents rect of the plot canvas
+*/
+void QwtPlotShapeItem::draw( QPainter *painter,
+    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+    const QRectF &canvasRect ) const
 {
-    if ( m_data->shape.isEmpty() )
+    if ( d_data->shape.isEmpty() )
         return;
 
-    if ( m_data->pen.style() == Qt::NoPen
-        && m_data->brush.style() == Qt::NoBrush )
+    if ( d_data->pen.style() == Qt::NoPen 
+        && d_data->brush.style() == Qt::NoBrush )
     {
         return;
     }
 
-    const QRectF cr = QwtScaleMap::invTransform(
+    const QRectF cRect = QwtScaleMap::invTransform(
         xMap, yMap, canvasRect.toRect() );
 
-    const QRectF& br = m_data->boundingRect;
-
-    if ( ( br.left() > cr.right() ) || ( br.right() < cr.left() )
-        || ( br.top() > cr.bottom() ) || ( br.bottom() < cr.top() ) )
+    if ( d_data->boundingRect.intersects( cRect ) )
     {
-        // outside the visible area
-        return;
-    }
+        const bool doAlign = QwtPainter::roundingAlignment( painter );
 
-    const bool doAlign = QwtPainter::roundingAlignment( painter );
+        QPainterPath path = qwtTransformPath( xMap, yMap, 
+            d_data->shape, doAlign );
 
-    QPainterPath path = qwtTransformPath( xMap, yMap,
-        m_data->shape, doAlign );
-
-    if ( testPaintAttribute( QwtPlotShapeItem::ClipPolygons ) )
-    {
-        const qreal pw = QwtPainter::effectivePenWidth( painter->pen() );
-        const QRectF clipRect = canvasRect.adjusted( -pw, -pw, pw, pw );
-
-        QPainterPath clippedPath;
-        clippedPath.setFillRule( path.fillRule() );
-
-        QList< QPolygonF > polygons = path.toSubpathPolygons();
-        for ( int i = 0; i < polygons.size(); i++ )
+        if ( testPaintAttribute( QwtPlotShapeItem::ClipPolygons ) )
         {
-            QwtClipper::clipPolygonF( clipRect, polygons[i], true );
-            clippedPath.addPolygon( polygons[i] );
+            qreal pw = qMax( qreal( 1.0 ), painter->pen().widthF());
+            QRectF clipRect = canvasRect.adjusted( -pw, -pw, pw, pw );
 
+            QPainterPath clippedPath;
+            clippedPath.setFillRule( path.fillRule() );
+
+            const QList<QPolygonF> polygons = path.toSubpathPolygons();
+            for ( int i = 0; i < polygons.size(); i++ )
+            {
+                const QPolygonF p = QwtClipper::clipPolygonF(
+                    clipRect, polygons[i], true );
+
+                clippedPath.addPolygon( p );
+
+            }
+
+            path = clippedPath;
         }
 
-        path = clippedPath;
+        if ( d_data->renderTolerance > 0.0 )
+        {
+            QwtWeedingCurveFitter fitter( d_data->renderTolerance );
+
+            QPainterPath fittedPath;
+            fittedPath.setFillRule( path.fillRule() );
+
+            const QList<QPolygonF> polygons = path.toSubpathPolygons();
+            for ( int i = 0; i < polygons.size(); i++ )
+                fittedPath.addPolygon( fitter.fitCurve( polygons[ i ] ) );
+
+            path = fittedPath;
+        }
+
+        painter->setPen( d_data->pen );
+        painter->setBrush( d_data->brush );
+
+        painter->drawPath( path );
     }
-
-    if ( m_data->renderTolerance > 0.0 )
-    {
-        QwtWeedingCurveFitter fitter( m_data->renderTolerance );
-
-        QPainterPath fittedPath;
-        fittedPath.setFillRule( path.fillRule() );
-
-        const QList< QPolygonF > polygons = path.toSubpathPolygons();
-        for ( int i = 0; i < polygons.size(); i++ )
-            fittedPath.addPolygon( fitter.fitCurve( polygons[ i ] ) );
-
-        path = fittedPath;
-    }
-
-    painter->setPen( m_data->pen );
-    painter->setBrush( m_data->brush );
-
-    painter->drawPath( path );
 }
 
 /*!
-   \return A rectangle filled with the color of the brush ( or the pen )
+  \return A rectangle filled with the color of the brush ( or the pen )
 
-   \param index Index of the legend entry
+  \param index Index of the legend entry 
                 ( usually there is only one )
-   \param size Icon size
+  \param size Icon size
 
-   \sa setLegendIconSize(), legendData()
- */
+  \sa setLegendIconSize(), legendData()
+*/
 QwtGraphic QwtPlotShapeItem::legendIcon( int index,
-    const QSizeF& size ) const
+    const QSizeF &size ) const
 {
     Q_UNUSED( index );
 
@@ -471,9 +461,9 @@ QwtGraphic QwtPlotShapeItem::legendIcon( int index,
     if ( size.isEmpty() )
         return icon;
 
-    if ( m_data->legendMode == QwtPlotShapeItem::LegendShape )
+    if ( d_data->legendMode == QwtPlotShapeItem::LegendShape )
     {
-        const QRectF& br = m_data->boundingRect;
+        const QRectF &br = d_data->boundingRect;
 
         QPainter painter( &icon );
         painter.setRenderHint( QPainter::Antialiasing,
@@ -481,17 +471,17 @@ QwtGraphic QwtPlotShapeItem::legendIcon( int index,
 
         painter.translate( -br.topLeft() );
 
-        painter.setPen( m_data->pen );
-        painter.setBrush( m_data->brush );
-        painter.drawPath( m_data->shape );
+        painter.setPen( d_data->pen );
+        painter.setBrush( d_data->brush );
+        painter.drawPath( d_data->shape );
     }
     else
     {
         QColor iconColor;
-        if ( m_data->brush.style() != Qt::NoBrush )
-            iconColor = m_data->brush.color();
+        if ( d_data->brush.style() != Qt::NoBrush )
+            iconColor = d_data->brush.color();
         else
-            iconColor = m_data->pen.color();
+            iconColor = d_data->pen.color();
 
         icon = defaultIcon( iconColor, size );
     }

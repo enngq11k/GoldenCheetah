@@ -1,16 +1,22 @@
-######################################################################
-# Qwt Examples - Copyright (C) 2002 Uwe Rathmann
-# This file may be used under the terms of the 3-clause BSD License
-######################################################################
+################################################################
+# Qwt Widget Library
+# Copyright (C) 1997   Josef Wilgen
+# Copyright (C) 2002   Uwe Rathmann
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the Qwt License, Version 1.0
+################################################################
 
 include( $${PWD}/../examples.pri )
 
 TARGET       = scatterplot
 
 HEADERS = \
-    Plot.h
+    mainwindow.h \
+    plot.h
 
 SOURCES = \
-    Plot.cpp \
-    main.cpp
+    main.cpp \
+    mainwindow.cpp \
+    plot.cpp
 

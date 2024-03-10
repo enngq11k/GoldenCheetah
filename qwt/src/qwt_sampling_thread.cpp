@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -8,105 +8,99 @@
  *****************************************************************************/
 
 #include "qwt_sampling_thread.h"
-#include <qelapsedtimer.h>
+#include "qwt_system_clock.h"
 
 class QwtSamplingThread::PrivateData
 {
-  public:
-    QElapsedTimer timer;
-    double msecsInterval;
+public:
+    QwtSystemClock clock;
+
+    double interval;
+    bool isStopped;
 };
 
+
 //! Constructor
-QwtSamplingThread::QwtSamplingThread( QObject* parent )
-    : QThread( parent )
+QwtSamplingThread::QwtSamplingThread( QObject *parent ):
+    QThread( parent )
 {
-    m_data = new PrivateData;
-    m_data->msecsInterval = 1e3; // 1 second
+    d_data = new PrivateData;
+    d_data->interval = 1000; // 1 second
+    d_data->isStopped = true;
 }
 
 //! Destructor
 QwtSamplingThread::~QwtSamplingThread()
 {
-    delete m_data;
+    delete d_data;
 }
 
 /*!
    Change the interval (in ms), when sample() is called.
    The default interval is 1000.0 ( = 1s )
 
-   \param msecs Interval
+   \param interval Interval
    \sa interval()
- */
-void QwtSamplingThread::setInterval( double msecs )
+*/
+void QwtSamplingThread::setInterval( double interval )
 {
-    if ( msecs < 0.0 )
-        msecs = 0.0;
+    if ( interval < 0.0 )
+        interval = 0.0;
 
-    m_data->msecsInterval = msecs;
+    d_data->interval = interval;
 }
 
 /*!
    \return Interval (in ms), between 2 calls of sample()
    \sa setInterval()
- */
+*/
 double QwtSamplingThread::interval() const
 {
-    return m_data->msecsInterval;
+    return d_data->interval;
 }
 
 /*!
    \return Time (in ms) since the thread was started
    \sa QThread::start(), run()
- */
+*/
 double QwtSamplingThread::elapsed() const
 {
-    if ( m_data->timer.isValid() )
-        return m_data->timer.nsecsElapsed() / 1e6;
+    if ( d_data->isStopped )
+        return 0.0;
 
-    return 0.0;
+    return d_data->clock.elapsed();
 }
 
 /*!
    Terminate the collecting thread
    \sa QThread::start(), run()
- */
+*/
 void QwtSamplingThread::stop()
 {
-    m_data->timer.invalidate();
+    d_data->isStopped = true;
 }
 
 /*!
    Loop collecting samples started from QThread::start()
    \sa stop()
- */
+*/
 void QwtSamplingThread::run()
 {
-    m_data->timer.start();
+    d_data->clock.start();
+    d_data->isStopped = false;
 
-    /*
-        We should have all values in nsecs/qint64, but
-        this would break existing code. TODO ...
-        Anyway - for QThread::usleep we even need microseconds( usecs )
-     */
-    while ( m_data->timer.isValid() )
+    while ( !d_data->isStopped )
     {
-        const qint64 timestamp = m_data->timer.nsecsElapsed();
-        sample( timestamp / 1e9 ); // seconds
+        const double elapsed = d_data->clock.elapsed();
+        sample( elapsed / 1000.0 );
 
-        if ( m_data->msecsInterval > 0.0 )
+        if ( d_data->interval > 0.0 )
         {
-            const double interval = m_data->msecsInterval * 1e3;
-            const double elapsed = ( m_data->timer.nsecsElapsed() - timestamp ) / 1e3;
+            const double msecs =
+                d_data->interval - ( d_data->clock.elapsed() - elapsed );
 
-            const double usecs = interval - elapsed;
-
-            if ( usecs > 0.0 )
-                QThread::usleep( qRound( usecs ) );
+            if ( msecs > 0.0 )
+                usleep( qRound( 1000.0 * msecs ) );
         }
     }
 }
-
-#if QWT_MOC_INCLUDE
-#include "moc_qwt_sampling_thread.cpp"
-#endif

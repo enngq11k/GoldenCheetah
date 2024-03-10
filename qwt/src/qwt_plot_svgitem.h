@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * Qwt Widget Library
  * Copyright (C) 1997   Josef Wilgen
  * Copyright (C) 2002   Uwe Rathmann
@@ -7,33 +7,55 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#ifndef QWT_PLOT_SVG_ITEM_H
-#define QWT_PLOT_SVG_ITEM_H
+#ifndef QWT_PLOT_SVGITEM_H
+#define QWT_PLOT_SVGITEM_H
 
 #include "qwt_global.h"
-#include "qwt_plot_graphicitem.h"
+#include "qwt_plot_item.h"
+#include <qstring.h>
 
+class QSvgRenderer;
 class QByteArray;
 
 /*!
-   \brief A plot item, which displays
+  \brief A plot item, which displays
          data in Scalable Vector Graphics (SVG) format.
 
-   SVG images are often used to display maps
+  SVG images are often used to display maps
+*/
 
-   QwtPlotSvgItem is only a small convenience wrapper class for
-   QwtPlotGraphicItem, that creates a QwtGraphic from SVG data.
- */
-
-class QWT_EXPORT QwtPlotSvgItem : public QwtPlotGraphicItem
+class QWT_EXPORT QwtPlotSvgItem: public QwtPlotItem
 {
-  public:
-    explicit QwtPlotSvgItem( const QString& title = QString() );
+public:
+    explicit QwtPlotSvgItem( const QString& title = QString::null );
     explicit QwtPlotSvgItem( const QwtText& title );
     virtual ~QwtPlotSvgItem();
 
-    bool loadFile( const QRectF&, const QString& fileName );
-    bool loadData( const QRectF&, const QByteArray& );
+    bool loadFile( const QRectF&, const QString &fileName );
+    bool loadData( const QRectF&, const QByteArray & );
+
+    virtual QRectF boundingRect() const;
+
+    virtual void draw( QPainter *p,
+        const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+        const QRectF &rect ) const;
+
+    virtual int rtti() const;
+
+protected:
+    const QSvgRenderer &renderer() const;
+    QSvgRenderer &renderer();
+
+    void render( QPainter *painter,
+        const QRectF &viewBox, const QRectF &rect ) const;
+
+    QRectF viewBox( const QRectF &area ) const;
+
+private:
+    void init();
+
+    class PrivateData;
+    PrivateData *d_data;
 };
 
 #endif

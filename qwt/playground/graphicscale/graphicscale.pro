@@ -1,25 +1,23 @@
-######################################################################
-# Qwt Examples - Copyright (C) 2002 Uwe Rathmann
-# This file may be used under the terms of the 3-clause BSD License
-######################################################################
+################################################################
+# Qwt Widget Library
+# Copyright (C) 1997   Josef Wilgen
+# Copyright (C) 2002   Uwe Rathmann
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the Qwt License, Version 1.0
+################################################################
 
 include( $${PWD}/../playground.pri )
-
-greaterThan(QT_MAJOR_VERSION, 4) { 
-    !qtHaveModule(svg) {
-        error("Qt has been built without SVG support !")
-    }   
-}
 
 TARGET   = graphicscale
 QT      += svg
 
 HEADERS = \
-    Canvas.h \
-    MainWindow.h
+    canvas.h \
+    mainwindow.h
 
 SOURCES = \
-    Canvas.cpp \
-    MainWindow.cpp \
+    canvas.cpp \
+    mainwindow.cpp \
     main.cpp
 

@@ -36,7 +36,6 @@
 #include <QTreeWidget>
 
 #include <qwt_plot_marker.h>
-#include <qwt_scale_map.h>
 
 class SplitSelect;
 class SplitBackground;

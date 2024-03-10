@@ -218,21 +218,21 @@ Aerolab::Aerolab(
   static_cast<QwtPlotCanvas*>(canvas())->setFrameStyle(QFrame::NoFrame);
 
   setXTitle();
-  setAxisTitle(QwtAxis::YLeft, tr("Elevation (m)"));
-  setAxisScale(QwtAxis::YLeft, -300, 300);
-  setAxisTitle(QwtAxis::XBottom, tr("Distance (km)"));
-  setAxisScale(QwtAxis::XBottom, 0, 60);
+  setAxisTitle(yLeft, tr("Elevation (m)"));
+  setAxisScale(yLeft, -300, 300);
+  setAxisTitle(xBottom, tr("Distance (km)"));
+  setAxisScale(xBottom, 0, 60);
 
   veCurve = new QwtPlotCurve(tr("V-Elevation"));
   altCurve = new QwtPlotCurve(tr("Elevation"));
 
   // get rid of nasty blank space on right of the plot
-  veCurve->setYAxis( QwtAxis::YLeft );
-  altCurve->setYAxis( QwtAxis::YLeft );
+  veCurve->setYAxis( yLeft );
+  altCurve->setYAxis( yLeft );
 
   intervalHighlighterCurve = new QwtPlotCurve();
   intervalHighlighterCurve->setBaseline(-5000);
-  intervalHighlighterCurve->setYAxis( QwtAxis::YLeft );
+  intervalHighlighterCurve->setYAxis( yLeft );
   intervalHighlighterCurve->setSamples( new IntervalAerolabData( this, context ) );
   intervalHighlighterCurve->attach( this );
   //XXX broken this->legend()->remove( intervalHighlighterCurve ); // don't show in legend
@@ -273,8 +273,8 @@ Aerolab::configChanged(qint32)
   QPalette palette;
   palette.setColor(QPalette::WindowText, GColor(CPLOTMARKER));
   palette.setColor(QPalette::Text, GColor(CPLOTMARKER));
-  axisWidget(QwtAxis::XBottom)->setPalette(palette);
-  axisWidget(QwtAxis::YLeft)->setPalette(palette);
+  axisWidget(QwtPlot::xBottom)->setPalette(palette);
+  axisWidget(QwtPlot::yLeft)->setPalette(palette);
 }
 
 void
@@ -424,7 +424,7 @@ void
 Aerolab::adjustEoffset() {
 
     if (autoEoffset && !altArray.empty()) {
-        double idx = axisScaleDiv( QwtAxis::XBottom ).lowerBound();
+        double idx = axisScaleDiv( QwtPlot::xBottom ).lowerBound();
         parent->eoffsetSlider->setEnabled(false);
 
         if (bydist) {
@@ -481,7 +481,7 @@ Aerolab::recalc( bool new_zoom ) {
   }
 
   if( new_zoom )
-      setAxisScale(QwtAxis::XBottom, 0.0, (bydist?totalRideDistance:rideTimeSecs));
+      setAxisScale(xBottom, 0.0, (bydist?totalRideDistance:rideTimeSecs));
 
 
 
@@ -503,7 +503,7 @@ Aerolab::setYMax(bool new_zoom)
 
              {
 
-                 setAxisTitle( QwtAxis::YLeft, tr("Elevation (m)") );
+                 setAxisTitle( yLeft, tr("Elevation (m)") );
 
              }
 
@@ -511,7 +511,7 @@ Aerolab::setYMax(bool new_zoom)
 
              {
 
-                 setAxisTitle( QwtAxis::YLeft, tr("Elevation (')") );
+                 setAxisTitle( yLeft, tr("Elevation (')") );
 
              }
 
@@ -521,9 +521,9 @@ Aerolab::setYMax(bool new_zoom)
             //************
 
   //if (veCurve->isVisible()) {
-   // setAxisTitle(QwtAxis::YLeft, tr("Elevation"));
+   // setAxisTitle(yLeft, tr("Elevation"));
     if ( !altArray.empty() ) {
-   //   setAxisScale(QwtAxis::YLeft,
+   //   setAxisScale(yLeft,
    //          min( veCurve->minYValue(), altCurve->minYValue() ) - 10,
    //          10.0 + max( veCurve->maxYValue(), altCurve->maxYValue() ) );
 
@@ -531,7 +531,7 @@ Aerolab::setYMax(bool new_zoom)
         maxY = 10.0 + max( veCurve->maxYValue(), altCurve->maxYValue() );
 
     } else {
-      //setAxisScale(QwtAxis::YLeft,
+      //setAxisScale(yLeft,
       //       veCurve->minYValue() ,
       //       1.05 * veCurve->maxYValue() );
 
@@ -562,12 +562,12 @@ Aerolab::setYMax(bool new_zoom)
 
     }
 
-    setAxisScale( QwtAxis::YLeft, minY, maxY );
-    setAxisLabelRotation(QwtAxis::YLeft,270);
-    setAxisLabelAlignment(QwtAxis::YLeft,Qt::AlignVCenter);
+    setAxisScale( yLeft, minY, maxY );
+    setAxisLabelRotation(yLeft,270);
+    setAxisLabelAlignment(yLeft,Qt::AlignVCenter);
   }
 
-  setAxisVisible(QwtAxis::YLeft, veCurve->isVisible());
+  enableAxis(yLeft, veCurve->isVisible());
 }
 
 
@@ -576,9 +576,9 @@ void
 Aerolab::setXTitle() {
 
   if (bydist)
-    setAxisTitle(QwtAxis::XBottom, tr("Distance ")+QString(GlobalContext::context()->useMetricUnits?"(km)":"(miles)"));
+    setAxisTitle(xBottom, tr("Distance ")+QString(GlobalContext::context()->useMetricUnits?"(km)":"(miles)"));
   else
-    setAxisTitle(QwtAxis::XBottom, tr("Time (minutes)"));
+    setAxisTitle(xBottom, tr("Time (minutes)"));
 }
 
 void

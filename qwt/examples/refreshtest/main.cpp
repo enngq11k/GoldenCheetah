@@ -1,18 +1,30 @@
-/*****************************************************************************
- * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
- * This file may be used under the terms of the 3-clause BSD License
- *****************************************************************************/
+#include "mainwindow.h"
+#include <qapplication.h>
 
-#include "MainWindow.h"
-#include <QApplication>
+#ifndef QWT_NO_OPENGL
+#if QT_VERSION >= 0x040600 && QT_VERSION < 0x050000
+#define USE_OPENGL 1
+#endif
+#endif
 
-int main( int argc, char* argv[] )
+#if USE_OPENGL
+#include <qgl.h>
+#endif
+
+int main( int argc, char **argv )
 {
-    QApplication app( argc, argv );
+#if USE_OPENGL
+    // on my box QPaintEngine::OpenGL2 has serious problems, f.e:
+    // the lines of a simple drawRect are wrong.
 
-    MainWindow window;
-    window.resize( 600, 400 );
-    window.show();
+    QGL::setPreferredPaintEngine( QPaintEngine::OpenGL );
+#endif
 
-    return app.exec();
+    QApplication a( argc, argv );
+
+    MainWindow mainWindow;
+    mainWindow.resize( 600, 400 );
+    mainWindow.show();
+
+    return a.exec();
 }

@@ -46,6 +46,7 @@ class AllPlot;
 #include <qwt_plot_picker.h>
 #include <qwt_text_engine.h>
 #include <qwt_picker_machine.h>
+#include <qwt_compat.h>
 
 #include "qxtstringspinbox.h" // for reveal control groupby selection
 
